@@ -1,4 +1,7 @@
-mlcl_forms
-==========
+# mlcl_forms
 
-Form library for the mlcl CMS based on angularjs
+Form library heavily based on the concept of forms-angular (by Mark Chapman)
+adapted and redesigned for the needs of the molecuel CMS. Still should be compatible with
+forms-angular's server.
+
+It's a very ealy version and we are working on the support of new widgets.
