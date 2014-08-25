@@ -121,15 +121,25 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             options.nameString = options.idString;
           }
 
-          options.requiredString = (isRequired || fieldInfo.required) ? ' required' : '';
-          options.readOnlyString = fieldInfo.readonly ? ' readonly' : '';
-          options.placeHolder = fieldInfo.placeHolder;
+          options.requiredString = (isRequired || fieldInfo.required) ? 'required' : ' ';
+          options.readOnlyString = fieldInfo.readonly ? 'readonly' : ' ';
+          options.placeHolder = (fieldInfo.placeHolder) ? fieldInfo.placeHolder: ' ';
           options.attributes = {};
 
           if (options.formstyle === 'inline') { options.placeHolder = options.placeHolder || fieldInfo.label; }
 
           options.attributes.model = options.modelString;
           options.attributes.name = options.nameString;
+          options.attributes.required = (isRequired || fieldInfo.required) ? 'true': 'false';
+          options.attributes.readonly = fieldInfo.readonly ? 'true' : 'false';
+          options.attributes.placeholder = options.placeHolder;
+          if(fieldInfo.max) {
+            options.attributes.max = fieldInfo.max;
+          }
+
+          if(fieldInfo.min) {
+            options.attributes.min = fieldInfo.min;
+          }
 
           if(options.idString) {
             options.attributes.id = options.idString;
@@ -150,17 +160,38 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             fieldInfo.instance = 'string';
           }
 
-          var handlerString2 = fieldInfo.instance;
-          var handlerString1 = fieldInfo.instance+ ':'+ fieldInfo.type;
+          var handlerString1;
+          var handlerString2;
+          var handlerString3;
+          var fallbackHandler = 'fallbackField';
+
+          if(fieldInfo.instance) {
+            handlerString3 = fieldInfo.instance;
+          }
+
+          if(handlerString3 && fieldInfo.type) {
+            handlerString2 = handlerString3+ ':'+ fieldInfo.type;
+          }
+
+          if(handlerString2 && fieldInfo.widget) {
+            handlerString1 = handlerString2 + ':' + fieldInfo.widget;
+          }
 
           var FieldHandler;
           if($injector.has(handlerString1)) {
             FieldHandler = $injector.get(handlerString1);
-          } else if($injector.has(handlerString2)) {
-            FieldHandler = $injector.has(handlerString2);
+          } else if(typeof FieldHandler !== 'function' && $injector.has(handlerString2)) {
+            FieldHandler = $injector.get(handlerString2);
+          } else if(typeof FieldHandler !== 'function' && $injector.has(handlerString3)) {
+            FieldHandler = $injector.get(handlerString3);
+          } else {
+            if($injector.has(fallbackHandler)) {
+              console.log(handlerString2);
+              FieldHandler = $injector.get(fallbackHandler);
+            }
           }
 
-          if(FieldHandler) {
+          if(typeof FieldHandler === 'function') {
             var childScope = $rootScope.$new(true);
             childScope.fieldInfo = fieldInfo;
             childScope.options = options;
@@ -170,7 +201,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             return handler;
           }
         };
-        
+
         /**
          * convertFormStyleToClass - Returns the style of the form
          *

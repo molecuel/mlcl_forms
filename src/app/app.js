@@ -109,12 +109,12 @@ var mlcl_forms = angular.module('mlcl_forms', [
           mongooseType = mongooseType.caster;
           angular.extend(mongooseOptions, mongooseType.options);
         }
+        formInstructions.instance = mongooseType.instance.toLowerCase();
         if (mongooseType.instance === 'String') {
           if (mongooseOptions.enum) {
             formInstructions.type = formInstructions.type || 'select';
             // Hacky way to get required styling working on select controls
             if (mongooseOptions.required) {
-
               $scope.$watch('record.' + formInstructions.name, function (newValue) {
                 updateInvalidClasses(newValue, formInstructions.id, formInstructions.select2);
               }, true);
@@ -264,6 +264,11 @@ var mlcl_forms = angular.module('mlcl_forms', [
           formInstructions.type = 'checkbox';
         } else if (mongooseType.instance === 'Number') {
           formInstructions.type = 'number';
+          formInstructions.max = mongooseOptions.max;
+          formInstructions.min = mongooseOptions.min;
+          formInstructions.step = mongooseOptions.step;
+
+          //@deprecated
           if (mongooseOptions.min) {
             formInstructions.add = 'min="' + mongooseOptions.min + '" ' + (formInstructions.add || '');
           }
