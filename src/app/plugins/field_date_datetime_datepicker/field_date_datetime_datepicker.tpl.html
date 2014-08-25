@@ -1,0 +1,10 @@
+<div class="control-group">
+  <label class="control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
+  <div class="controls">
+    <input ng-model="attributes.model" type="text" id="{{attributes.id}}" name="{{attributes.name}}"
+      class="form-control" datepicker-popup="MM-dd-yyyy" datepicker-append-to-body="true"
+      is-open="data.isOpen" ng-click="data.isOpen = true" />
+    <br>
+    <p class="help-block">{{fieldInfo.help}}</p>
+  </div>
+</div>

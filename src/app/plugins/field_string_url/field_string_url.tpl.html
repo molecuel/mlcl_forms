@@ -1,7 +1,7 @@
 <div class="control-group">
   <label class="control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
   <div class="controls">
-    <input model="{{attributes.model}}" id="{{attributes.id}}" name="{{attributes.name}}" type="url" placeholder="{{attributes.placeholder}}" class="input-xlarge" ng-required="{{attributes.required}}" ng-readonly="{{attributes.readonly}}" >
+    <input ng-model="attributes.model" id="{{attributes.id}}" name="{{attributes.name}}" type="url" placeholder="{{attributes.placeholder}}" class="input-xlarge" ng-required="{{attributes.required}}" ng-readonly="{{attributes.readonly}}" >
     <p class="help-block">{{fieldInfo.help}}</p>
   </div>
 </div>

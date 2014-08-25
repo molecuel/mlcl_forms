@@ -4,7 +4,7 @@
 
 var formModule = angular.module('mlcl_forms.form');
 
-
+formModule.$inject =  ['ui.bootstrap.datepicker'];
 
 /**
  * fieldStringText - Function for string text rendering
@@ -17,14 +17,14 @@ var formModule = angular.module('mlcl_forms.form');
 var fieldStringText = function fieldStringText($compile, $templateCache, $rootScope) {
   return function(fieldScope) {
     var self = this;
-  
+
     this.render = function() {
-      var inputHtml = $templateCache.get('plugins/field_string/field_string_text.tpl.html');
+      console.log('here');
+      var inputHtml = $templateCache.get('plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
       return this;
     };
   };
 };
 
-formModule.factory('string:text', fieldStringText);
-formModule.factory('string', fieldStringText);
+formModule.factory('date:datetime:datepicker', fieldStringText);

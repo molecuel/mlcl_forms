@@ -128,7 +128,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 
           if (options.formstyle === 'inline') { options.placeHolder = options.placeHolder || fieldInfo.label; }
 
-          options.attributes.model = options.modelString;
+          options.attributes.model = options.model;
           options.attributes.name = options.nameString;
           options.attributes.required = (isRequired || fieldInfo.required) ? 'true': 'false';
           options.attributes.readonly = fieldInfo.readonly ? 'true' : 'false';
@@ -172,7 +172,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           if(handlerString3 && fieldInfo.type) {
             handlerString2 = handlerString3+ ':'+ fieldInfo.type;
           }
-
+          fieldInfo.widget = 'datepicker';
           if(handlerString2 && fieldInfo.widget) {
             handlerString1 = handlerString2 + ':' + fieldInfo.widget;
           }
@@ -687,7 +687,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
     return function(fieldInfo, options) {
       this.options = options;
       this.fieldInfo = fieldInfo;
-      this.scope = $rootScope.$new(true);
+      this.scope = $rootScope.$new();
 
       var self = this;
       this.render = function() {

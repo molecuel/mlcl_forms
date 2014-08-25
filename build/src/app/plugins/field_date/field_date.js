@@ -4,7 +4,7 @@
 
 var formModule = angular.module('mlcl_forms.form');
 
-
+formModule.$inject =  ['ui.bootstrap', 'ui.bootstrap.datepicker'];
 
 /**
  * fieldStringText - Function for string text rendering
@@ -17,7 +17,6 @@ var formModule = angular.module('mlcl_forms.form');
 var fieldStringText = function fieldStringText($compile, $templateCache, $rootScope) {
   return function(fieldScope) {
     var self = this;
-
     this.render = function() {
       var inputHtml = $templateCache.get('plugins/field_date/field_date.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
