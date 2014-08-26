@@ -1,5 +1,7 @@
 mlcl_forms.form = angular.module( 'mlcl_forms.form', [
-  'mlcl_forms'
+  'mlcl_forms',
+  // should later be provided by plugin textArea
+  'monospaced.elastic'
 ])
 .directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory) {
     return {
@@ -167,9 +169,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             childScope.modelstring = modelString;
             // watch the subscope and push changes to the current scope record
             childScope.$watch('model', function(val) {
-              console.log(childScope.modelstring);
               scope.record[childScope.modelstring] = val;
-              console.log(scope.record);
             });
             var handler = new FieldHandler(childScope);
             handler.scope = childScope;

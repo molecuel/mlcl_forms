@@ -5873,3 +5873,26 @@ h2 {
  *
  * TODO: In a later version of this boilerplate, I'd like to automate this.
  */
+input.form-control,
+textarea.form-control {
+  box-shadow: none !important;
+  border-top: 0;
+  border-left: 0;
+  border-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+input.form-control:focus,
+textarea.form-control:focus {
+  border-width: 2px;
+}
+input.form-control:disabled,
+textarea.form-control:disabled {
+  border-style: dashed;
+}
+textarea.form-control {
+  resize: none;
+}
+textarea.form-control:focus {
+  resize: both;
+}
