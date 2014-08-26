@@ -25,6 +25,7 @@
     <div class="main" ng-init="modelName='b_using_options'">
       <div ng-controller="BaseCtrl"  class="test" ui-view>
           <form-input name="baseForm" schema="baseSchema()" formstyle="compact"></form-input>
+          <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="save()" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
       </div>
     </div>
   </body>

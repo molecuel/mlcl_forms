@@ -4,8 +4,6 @@
 
 var formModule = angular.module('mlcl_forms.form');
 
-formModule.$inject =  ['monospaced.elastic'];
-
 /**
  * fieldStringText - Function for string text rendering
  *

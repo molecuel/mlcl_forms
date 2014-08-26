@@ -5,24 +5,10 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
-
         var sizeMapping = [1, 2, 4, 6, 8, 10, 12];
-        var sizeDescriptions = ['mini', 'small', 'medium', 'large', 'xlarge', 'xxlarge', 'block-level'];
         var defaultSizeOffset = 2; // medium, which was the default for Twitter Bootstrap 2
         var subkeys = [];
         var tabsSetup = false;
-
-
-        /**
-         * isHorizontalStyle - Calculate form style
-         *
-         * @param  {type} formStyle description
-         * @return {string}           form style
-         */
-        var isHorizontalStyle = function isHorizontalStyle(formStyle) {
-          return (!formStyle || formStyle === 'undefined' || ['vertical', 'inline'].indexOf(formStyle) === -1);
-        };
-
 
         /**
          * generateNgShow function - Calculates if a element should be shown or hidden
@@ -60,21 +46,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           return evaluateSide(showWhen.lhs) + conditionSymbols[conditionPos] + evaluateSide(showWhen.rhs);
         };
 
-
-        /**
-         * generateDefault - description
-         *
-         * @param  {type} common    description
-         * @param  {type} options   description
-         * @param  {type} fieldInfo description
-         * @return {type}           description
-         */
-        var generateDefault = function generateDefault (common, options, fieldInfo) {
-          var result = '<input ' + common + 'type="' + fieldInfo.type + '"';
-          result += ' />';
-          return result;
-        };
-
         /**
          * generateInput - Generate the input field
          *
@@ -88,7 +59,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
         var generateInput = function generateInput(fieldInfo, modelString, isRequired, idString, options) {
           var nameString;
           if (!modelString) {
-            modelString = (options.model || 'record') + '.';
+            modelString = '';
             if (options.subschema && fieldInfo.name.indexOf('.') !== -1) {
               // Schema handling - need to massage the ngModel and the id
               var compoundName = fieldInfo.name,
@@ -113,44 +84,42 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
               modelString += fieldInfo.name;
             }
           }
-          options.modelString = modelString;
-          options.nameString = nameString;
-          options.idString = idString;
 
-          if(!options.nameString && options.idString) {
-            options.nameString = options.idString;
+          var attributes = {};
+
+          attributes.modelString = modelString;
+          attributes.nameString = nameString;
+          attributes.idString = idString;
+
+          if(!attributes.nameString && attributes.idString) {
+            attributes.nameString = attributes.idString;
           }
 
-          options.requiredString = (isRequired || fieldInfo.required) ? 'required' : ' ';
-          options.readOnlyString = fieldInfo.readonly ? 'readonly' : ' ';
-          options.placeHolder = (fieldInfo.placeHolder) ? fieldInfo.placeHolder: ' ';
-          options.attributes = {};
+          attributes.requiredString = (isRequired || fieldInfo.required) ? 'required' : ' ';
+          attributes.readOnlyString = fieldInfo.readonly ? 'readonly' : ' ';
+          attributes.placeHolder = (fieldInfo.placeHolder) ? fieldInfo.placeHolder: ' ';
 
-          if (options.formstyle === 'inline') { options.placeHolder = options.placeHolder || fieldInfo.label; }
+          if (options.formstyle === 'inline') { options.placeHolder = attributes.placeHolder || fieldInfo.label; }
 
-          options.attributes.model = options.model;
-          options.attributes.name = options.nameString;
-          options.attributes.required = (isRequired || fieldInfo.required) ? 'true': 'false';
-          options.attributes.readonly = fieldInfo.readonly ? 'true' : 'false';
-          options.attributes.placeholder = options.placeHolder;
+          attributes.model = scope.record[modelString];
+          attributes.required = (isRequired || fieldInfo.required) ? 'true': 'false';
+          attributes.readonly = fieldInfo.readonly ? 'true' : 'false';
+          attributes.placeholder = attributes.placeHolder;
+
           if(fieldInfo.max) {
-            options.attributes.max = fieldInfo.max;
+            attributes.max = fieldInfo.max;
           }
 
           if(fieldInfo.min) {
-            options.attributes.min = fieldInfo.min;
+            attributes.min = fieldInfo.min;
           }
 
-          if(options.idString) {
-            options.attributes.id = options.idString;
-          }
-
-          if(options.placeholder) {
-            options.attributes.placeholder = options.placeholder;
+          if(attributes.idString) {
+            attributes.id = attributes.idString;
           }
 
           if (fieldInfo.popup) {
-            options.attributes.title = fieldInfo.popup;
+            attributes.title = fieldInfo.popup;
           }
 
           // @todo add classes
@@ -186,48 +155,27 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             FieldHandler = $injector.get(handlerString3);
           } else {
             if($injector.has(fallbackHandler)) {
-              console.log(handlerString2);
               FieldHandler = $injector.get(fallbackHandler);
             }
           }
 
           if(typeof FieldHandler === 'function') {
-            var childScope = $rootScope.$new(true);
+            var childScope = $rootScope.$new();
             childScope.fieldInfo = fieldInfo;
-            childScope.options = options;
-            childScope.attributes = options.attributes;
+            childScope.attributes = attributes;
+            childScope.model = attributes.model;
+            childScope.modelstring = modelString;
+            // watch the subscope and push changes to the current scope record
+            childScope.$watch('model', function(val) {
+              console.log(childScope.modelstring);
+              scope.record[childScope.modelstring] = val;
+              console.log(scope.record);
+            });
             var handler = new FieldHandler(childScope);
+            handler.scope = childScope;
             handler.render();
             return handler;
           }
-        };
-
-        /**
-         * convertFormStyleToClass - Returns the style of the form
-         *
-         * @param  {type} aFormStyle description
-         * @return {type}            description
-         */
-        var convertFormStyleToClass = function convertFormStyleToClass(aFormStyle) {
-          var result;
-          switch (aFormStyle) {
-            case 'horizontal' :
-              result = 'form-horizontal';
-              break;
-            case 'vertical' :
-              result = '';
-              break;
-            case 'inline' :
-              result = 'form-inline';
-              break;
-            case 'horizontalCompact' :
-              result = 'form-horizontal compact';
-              break;
-            default:
-              result = 'form-horizontal compact';
-              break;
-          }
-          return result;
         };
 
         /**
@@ -299,109 +247,12 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           info.type = info.type || 'text';
           info.id = info.id || 'f_' + info.name.replace(/\./g, '_');
           info.label = (info.label !== undefined) ? (info.label === null ? '' : info.label) : $filter('titleCase')(info.name.split('.').slice(-1)[0]);
-
-          var template = '', closeTag = '';
-          var classes = '';
-
-          classes = 'form-group';
-          if (options.formstyle === 'vertical' && info.size !== 'block-level') {
-            template += '<div class="row">';
-            classes += ' col-xs-' + sizeMapping[info.size ? sizeDescriptions.indexOf(info.size) : defaultSizeOffset];
-            closeTag += '</div>';
-          }
-          template += '<div' + addAll('Group', classes, options);
-          closeTag += '</div>';
-
-          var includeIndex = false;
-          if (options.index) {
-            try {
-              parseInt(options.index, 10);
-              includeIndex = true;
-            } catch (err) {
-              // Nothing to do
-            }
-          }
-          if (info.showWhen) {
-            if (typeof info.showWhen === 'string') {
-              template += 'ng-show="' + info.showWhen + '"';
-            } else {
-              template += 'ng-show="' + generateNgShow(info.showWhen, options.model) + '"';
-            }
-          }
-          if (includeIndex) {
-            template += ' id="cg_' + info.id.replace('_', '-' + attrs.index + '-') + '">';
-          } else {
-            template += ' id="cg_' + info.id.replace(/\./g, '-') + '">';
-          }
-
-          if (info.schema) {
-            var niceName = info.name.replace(/\./g, '_');
-            var schemaDefName = '$_schema_' + niceName;
-            scope[schemaDefName] = info.schema;
-            if (info.schema) { // display as a control group
-              //schemas (which means they are arrays in Mongoose)
-              // Check for subkey - selecting out one or more of the array
-              if (info.subkey) {
-                info.subkey.path = info.name;
-                scope[schemaDefName + '_subkey'] = info.subkey;
-
-                var subKeyArray = angular.isArray(info.subkey) ? info.subkey : [info.subkey];
-                for (var arraySel = 0; arraySel < subKeyArray.length; arraySel++) {
-                  var topAndTail = containerInstructions(subKeyArray[arraySel]);
-                  template += topAndTail.before;
-                  template += processInstructions(info.schema, null, {subschema: true, formStyle: options.formstyle, subkey: schemaDefName + '_subkey', subkeyno: arraySel});
-                  template += topAndTail.after;
-                }
-                subkeys.push(info);
-              } else {
-                template += '<div class="schema-head">' + info.label +
-                  '</div>' +
-                  '<div ng-form class="' +
-                  convertFormStyleToClass(info.formStyle) + '" name="form_' + niceName + '{{$index}}" class="sub-doc well" id="' + info.id + 'List_{{$index}}" ' +
-                  ' ng-repeat="subDoc in ' + (options.model || 'record') + '.' + info.name + ' track by $index">' +
-                  '   <div class="row" sub-doc">' +
-                  '      <div class="pull-left">' + processInstructions(info.schema, false, {subschema: true, formstyle: info.formStyle, model: options.model}) +
-                  '      </div>';
-
-                if (!info.noRemove || info.customSubDoc) {
-                  template += '   <div class="pull-left sub-doc-btns">';
-                  if (info.customSubDoc) {
-                    template += info.customSubDoc;
-                  }
-                  if (!info.noRemove) {
-                    template += '      <button name="remove_' + info.id + '_btn" class="remove-btn btn btn-default btn-xs form-btn" ng-click="remove(\'' + info.name + '\',$index,$event)">' +
-                      '          <i class="glyphicon glyphicon-minus">';
-                    template += '          </i> Remove' +
-                      '      </button>';
-                  }
-                  template += '  </div> ';
-                }
-                template += '   </div>' +
-                  '</div>';
-                if (!info.noAdd || info.customFooter) {
-                  template += '<div class = "schema-foot">';
-                  if (info.customFooter) {
-                    template += info.customFooter;
-                  }
-                  if (!info.noAdd) {
-                    template += '    <button id="add_' + info.id + '_btn" class="add-btn btn btn-default btn-xs form-btn" ng-click="add(\'' + info.name + '\',$event)">' +
-                      '        <i class="glyphicon glyphicon-plus"></i> Add';
-                    template += '    </button>';
-                  }
-                  template += '</div>';
-                }
-              }
-            }
-          }
-
-
           var handlerReturn = generateInput(info, null, options.required, info.id, options);
           return handlerReturn;
         };
 
 
         var processInstructions = function (instructionsArray, topLevel, options) {
-          var result = '';
           var myres = [];
           var parseSubkeyName = function parseSubkeyName(value, key) {
             return scope[options.subkey].path + '.' + key === info.name;
@@ -410,12 +261,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           if (instructionsArray) {
             for (var anInstruction = 0; anInstruction < instructionsArray.length; anInstruction++) {
               var info = instructionsArray[anInstruction];
-              if (anInstruction === 0 && topLevel && !options.schema.match(/$_schema_/)) {
-                info.add = (info.add || '');
-                if (info.add.indexOf('ui-date') === -1 && !options.noautofocus && !info.containerType) {
-                  info.add = info.add + 'autofocus ';
-                }
-              }
               var callHandleField = true;
               if (info.directive) {
                 var directiveName = info.directive;
@@ -441,33 +286,18 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                   }
                 }
                 newElement += '></' + directiveName + '>';
-                result += newElement;
                 callHandleField = false;
               } else if (info.containerType) {
                 var parts = containerInstructions(info);
                 switch (info.containerType) {
                   case 'tab' :
-                    // maintain support for simplified tabset syntax for now
-                    if (!tabsSetup) {
-                      tabsSetup = 'forced';
-                      result += '<tabset>';
-                    }
-
-                    result += parts.before;
-                    result += processInstructions(info.content, null, options);
-                    result += parts.after;
+                    // container instructions here
                     break;
                   case 'tabset' :
-                    tabsSetup = true;
-                    result += parts.before;
-                    result += processInstructions(info.content, null, options);
-                    result += parts.after;
+                    // container instructions here
                     break;
                   default:
-                    // includes wells, fieldset
-                    result += parts.before;
-                    result += processInstructions(info.content, null, options);
-                    result += parts.after;
+                    // container instructions here
                     break;
                 }
                 callHandleField = false;
@@ -480,10 +310,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
               }
 
               if (callHandleField) {
-                //                            if (groupId) {
-                //                                scope['showHide' + groupId] = true;
-                //                            }
-                result += handleField(info, options);
                 var res = handleField(info, options);
                 myres.push(res);
               }
@@ -495,33 +321,27 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 
         };
 
+
+        /**
+         * watch function - watch function for attrs.schema
+         *
+         * @param  {string} attrs.schema baseSchema()
+         * @callback {function}
+         */
         var unwatch = scope.$watch(attrs.schema, function (newValue) {
           if (newValue) {
             newValue = angular.isArray(newValue) ? newValue : [newValue];   // otherwise some old tests stop working for no real reason
             if (newValue.length > 0) {
               unwatch();
               var elementHtml = '';
-              var formElement;
               var theRecord = scope[attrs.model || 'record'];      // By default data comes from scope.record
-
               if ((attrs.subschema || attrs.model) && !attrs.forceform) {
                 elementHtml = '';
               } else {
                 scope.topLevelFormName = attrs.name || 'myForm';     // Form name defaults to myForm
-                // Copy attrs we don't process into form
-                var customAttrs = '';
-                for (var thisAttr in attrs) {
-                  if (attrs.hasOwnProperty(thisAttr)) {
-                    if (thisAttr[0] !== '$' && ['name', 'formstyle', 'schema', 'subschema', 'model'].indexOf(thisAttr) === -1) {
-                      customAttrs += ' ' + attrs.$attr[thisAttr] + '="' + attrs[thisAttr] + '"';
-                    }
-                  }
-                  //formElement = new FormFactory({name: scope.topLevelFormName, class: convertFormStyleToClass(attrs.formstyle) + customAttrs}).getElement();
-                }
+                formElement = new FormFactory({name: scope.topLevelFormName});
               }
-
-              formElement = new FormFactory({name: scope.topLevelFormName});
-
+              if (theRecord === scope.topLevelFormName) { throw new Error('Model and Name must be distinct - they are both ' + theRecord); }
               if(formElement) {
                 elementHtml = processInstructions(newValue, true, attrs);
                 // Get the form element via form factory
@@ -534,7 +354,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 element.replaceWith(formElement.htmlObject);
               }
 
-              //console.log($compile(elementHtml)(scope));
               // If there are subkeys we need to fix up ng-model references when record is read
               if (subkeys.length > 0) {
                 var unwatch2 = scope.$watch('phase', function (newValue) {
@@ -580,7 +399,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 // Turn off automatic editor creation first.
                 CKEDITOR.disableAutoInline = true;
               }*/
-
               if (scope.updateDataDependentDisplay && theRecord && Object.keys(theRecord).length > 0) {
                 // If this is not a test force the data dependent updates to the DOM
                 scope.updateDataDependentDisplay(theRecord, null, true);
@@ -599,85 +417,85 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   }])
   .service('utils', function () {
 
-  this.getAddAllGroupOptions = function (scope, attrs, classes) {
-    return getAddAllOptions(scope, attrs, "Group", classes);
-  };
+    this.getAddAllGroupOptions = function (scope, attrs, classes) {
+      return getAddAllOptions(scope, attrs, "Group", classes);
+    };
 
-  this.getAddAllFieldOptions = function (scope, attrs, classes) {
-    return getAddAllOptions(scope, attrs, "Field", classes);
-  };
+    this.getAddAllFieldOptions = function (scope, attrs, classes) {
+      return getAddAllOptions(scope, attrs, "Field", classes);
+    };
 
-  this.getAddAllLabelOptions = function (scope, attrs, classes) {
-    return getAddAllOptions(scope, attrs, "Label", classes);
-  };
+    this.getAddAllLabelOptions = function (scope, attrs, classes) {
+      return getAddAllOptions(scope, attrs, "Label", classes);
+    };
 
-  function getAddAllOptions(scope, attrs, type, classes) {
+    function getAddAllOptions(scope, attrs, type, classes) {
 
-    var addAllOptions = [],
-      classList = [],
-      tmp, i, options;
+      var addAllOptions = [],
+        classList = [],
+        tmp, i, options;
 
-    type = "addAll" + type;
+      type = "addAll" + type;
 
-    if (typeof(classes) === 'string') {
-      tmp = classes.split(' ');
-      for (i = 0; i < tmp.length; i++) {
-        classList.push(tmp[i]);
-      }
-    }
-
-    function getAllOptions(obj) {
-
-      for (var key in obj) {
-        if (key === type) {
-          addAllOptions.push(obj[key]);
-        }
-
-        if (key === "$parent") {
-          getAllOptions(obj[key]);
-        }
-      }
-    }
-
-    getAllOptions(scope);
-
-    if (attrs[type] !== undefined) {
-
-      if (typeof(attrs[type]) === "object") {
-
-        //support objects...
-
-      } else if (typeof(attrs[type]) === "string") {
-
-        tmp = attrs[type].split(' ');
-
+      if (typeof(classes) === 'string') {
+        tmp = classes.split(' ');
         for (i = 0; i < tmp.length; i++) {
-          if (tmp[i].indexOf('class=') === 0) {
-            classList.push(tmp[i].substring(6, tmp[i].length));
-          } else {
-            addAllOptions.push(tmp[i]);
+          classList.push(tmp[i]);
+        }
+      }
+
+      function getAllOptions(obj) {
+
+        for (var key in obj) {
+          if (key === type) {
+            addAllOptions.push(obj[key]);
+          }
+
+          if (key === "$parent") {
+            getAllOptions(obj[key]);
           }
         }
-      } else {
-        // return false; //error?
       }
+
+      getAllOptions(scope);
+
+      if (attrs[type] !== undefined) {
+
+        if (typeof(attrs[type]) === "object") {
+
+          //support objects...
+
+        } else if (typeof(attrs[type]) === "string") {
+
+          tmp = attrs[type].split(' ');
+
+          for (i = 0; i < tmp.length; i++) {
+            if (tmp[i].indexOf('class=') === 0) {
+              classList.push(tmp[i].substring(6, tmp[i].length));
+            } else {
+              addAllOptions.push(tmp[i]);
+            }
+          }
+        } else {
+          // return false; //error?
+        }
+      }
+
+      if (classList.length > 0) {
+        classes = ' class="' + classList.join(" ") + '" ';
+      } else {
+        classes = " ";
+      }
+
+      if (addAllOptions.length > 0) {
+        options = addAllOptions.join(" ") + " ";
+      } else {
+        options = "";
+      }
+
+      return classes + options;
+
     }
-
-    if (classList.length > 0) {
-      classes = ' class="' + classList.join(" ") + '" ';
-    } else {
-      classes = " ";
-    }
-
-    if (addAllOptions.length > 0) {
-      options = addAllOptions.join(" ") + " ";
-    } else {
-      options = "";
-    }
-
-    return classes + options;
-
-  }
 
 })
 /**

@@ -62,6 +62,7 @@ module.exports = {
    */
   vendor_files: {
     js: [
+      'vendor/angular-elastic/elastic.js'
     ],
     css: [
     ],

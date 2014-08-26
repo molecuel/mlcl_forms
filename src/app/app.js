@@ -698,7 +698,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
           delete $scope.record[prop];
         }
       }
-
       angular.extend($scope.record, master);
       $scope.setPristine();
     };
@@ -755,16 +754,7 @@ var mlcl_forms = angular.module('mlcl_forms', [
           if (typeof $scope.dataEventFunctions.onAfterCreate === 'function') {
             $scope.dataEventFunctions.onAfterCreate(data);
           }
-          if (options.redirect) {
-            $window.location = options.redirect;
-          } else {
-            if ($state && $state.params && $state.params.model) {
-              $state.go('model::edit', {id: data._id, model: $scope.modelName });
-            } else {
-              $location.path('/' + $scope.modelName + '/' + $scope.formPlusSlash + data._id + '/edit');
-              //                    reset?
-            }
-          }
+          $state.go('model::edit', {id: data._id, model: $scope.modelName });
         } else {
           $scope.showError(data);
         }
@@ -796,7 +786,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
 
     $scope.save = function (options) {
       options = options || {};
-
       //Convert the lookup values into ids
       var dataToSave = convertToMongoModel($scope.formSchema, angular.copy($scope.record), 0);
       if ($scope.id) {
@@ -1024,7 +1013,7 @@ var mlcl_forms = angular.module('mlcl_forms', [
       $scope.setFormDirty($event);
     };
 
-// Split a field name into the next level and all following levels
+    // Split a field name into the next level and all following levels
     function splitFieldName(aFieldName) {
       var nesting = aFieldName.split('.'),
         result = [nesting[0]];
@@ -1310,7 +1299,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
   };
 }])
 .factory('$data', [function () {
-
   var sharedData = {
     record: {},
     disableFunctions: {},
