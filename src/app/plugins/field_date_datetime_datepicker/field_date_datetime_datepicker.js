@@ -19,7 +19,6 @@ var fieldStringText = function fieldStringText($compile, $templateCache, $rootSc
     var self = this;
 
     this.render = function() {
-      console.log('here');
       var inputHtml = $templateCache.get('plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
       return this;

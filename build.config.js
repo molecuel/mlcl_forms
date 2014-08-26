@@ -62,7 +62,6 @@ module.exports = {
    */
   vendor_files: {
     js: [
-
     ],
     css: [
     ],
