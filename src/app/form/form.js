@@ -1,12 +1,31 @@
 mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'mlcl_forms',
   // should later be provided by plugin textArea
-  'monospaced.elastic'
+  'monospaced.elastic',
+  'mlcl_forms.services'
 ])
-.directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory) {
+.directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService) {
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
+        // initialize the api service
+        console.log(attrs);
+        if(attrs.modelname) {
+          var api = new ApiService(attrs.modelname, attrs.apihost);
+
+          // callback method to get the schema of the current model
+          api.getSchema(function(result) {
+            scope.schema = result;
+          });
+        }
+
+        scope.$watch('schema', function(newval) {
+          if(newval && attrs.record) {
+            // change record models if changed , get record via api 
+            console.log('changed');
+          }
+        });
+
         var sizeMapping = [1, 2, 4, 6, 8, 10, 12];
         var defaultSizeOffset = 2; // medium, which was the default for Twitter Bootstrap 2
         var subkeys = [];
@@ -328,7 +347,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
          * @param  {string} attrs.schema baseSchema()
          * @callback {function}
          */
-        var unwatch = scope.$watch(attrs.schema, function (newValue) {
+        var unwatch = scope.$watch('schema', function (newValue) {
           if (newValue) {
             newValue = angular.isArray(newValue) ? newValue : [newValue];   // otherwise some old tests stop working for no real reason
             if (newValue.length > 0) {

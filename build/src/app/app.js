@@ -30,20 +30,12 @@ var mlcl_forms = angular.module('mlcl_forms', [
     //$scope.filequeue = fileUpload.fieldData;
 
     $scope.init = function init(options) {
+      console.log('init');
       Object.keys(options).forEach(function(key) {
           $scope[key] = options[key];
       });
     };
 
-    if ($state && $state.params && $state.params.model) {
-      angular.extend($scope, $stateParse($state));
-    }
-
-    $scope.formPlusSlash = $scope.formName ? $scope.formName + '/' : '';
-    $scope.modelNameDisplay = sharedStuff.modelNameDisplay || $filter('titleCase')($scope.modelName);
-    $scope.generateEditUrl = function (obj) {
-      return urlService.buildUrl($scope.modelName + '/' + $scope.formPlusSlash + obj._id + '/edit');
-    };
 
     $scope.go = function(state, params) {
       $state.go(state, params);
@@ -79,11 +71,13 @@ var mlcl_forms = angular.module('mlcl_forms', [
     };
 
     $scope.getData = function (object, fieldname, element) {
+      console.log(getData);
       var leafData = $scope.walkTree(object, fieldname, element);
       return (leafData.lastObject && leafData.key) ? leafData.lastObject[leafData.key] : undefined;
     };
 
     $scope.setData = function (object, fieldname, element, value) {
+      console.log(setData);
       var leafData = $scope.walkTree(object, fieldname, element);
       leafData.lastObject[leafData.key] = value;
     };
@@ -99,217 +93,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
 
     var suffixCleanId = function (inst, suffix) {
       return (inst.id || 'f_' + inst.name).replace(/\./g, '_') + suffix;
-    };
-
-    var handleFieldType = function (formInstructions, mongooseType, mongooseOptions) {
-
-        var select2ajaxName;
-        if (mongooseType.caster) {
-          formInstructions.array = true;
-          mongooseType = mongooseType.caster;
-          angular.extend(mongooseOptions, mongooseType.options);
-        }
-        formInstructions.instance = mongooseType.instance.toLowerCase();
-        if (mongooseType.instance === 'String') {
-          if (mongooseOptions.enum) {
-            formInstructions.type = formInstructions.type || 'select';
-            // Hacky way to get required styling working on select controls
-            if (mongooseOptions.required) {
-              $scope.$watch('record.' + formInstructions.name, function (newValue) {
-                updateInvalidClasses(newValue, formInstructions.id, formInstructions.select2);
-              }, true);
-              setTimeout(function () {
-                updateInvalidClasses($scope.record[formInstructions.name], formInstructions.id, formInstructions.select2);
-              }, 0);
-            }
-            if (formInstructions.select2) {
-              $scope['select2' + formInstructions.name] = {
-                allowClear: !mongooseOptions.required,
-                initSelection: function (element, callback) {
-                  callback(element.select2('data'));
-                },
-                query: function (query) {
-                  var data = {results: []},
-                    searchString = query.term.toUpperCase();
-                  for (var i = 0; i < mongooseOptions.enum.length; i++) {
-                    if (mongooseOptions.enum[i].toUpperCase().indexOf(searchString) !== -1) {
-                      data.results.push({id: i, text: mongooseOptions.enum[i]});
-                    }
-                  }
-                  query.callback(data);
-                }
-              };
-              _.extend($scope['select2' + formInstructions.name], formInstructions.select2);
-              formInstructions.select2.s2query = 'select2' + formInstructions.name;
-              $scope.select2List.push(formInstructions.name);
-            } else {
-              formInstructions.options = suffixCleanId(formInstructions, 'Options');
-              $scope[formInstructions.options] = mongooseOptions.enum;
-            }
-          } else {
-            if (!formInstructions.type) {
-              formInstructions.type = (formInstructions.name.toLowerCase().indexOf('password') !== -1) ? 'password' : 'text';
-            }
-            if (mongooseOptions.match) {
-              formInstructions.add = 'pattern="' + mongooseOptions.match + '" ' + (formInstructions.add || '');
-            }
-          }
-        } else if (mongooseType.instance === 'ObjectID') {
-          formInstructions.ref = mongooseOptions.ref;
-          if (formInstructions.link && formInstructions.link.linkOnly) {
-            formInstructions.type = 'link';
-            formInstructions.linkText = formInstructions.link.text;
-            formInstructions.form = formInstructions.link.form;
-            delete formInstructions.link;
-          } else {
-            formInstructions.type = 'select';
-            if (formInstructions.select2) {
-              $scope.select2List.push(formInstructions.name);
-              if (formInstructions.select2.fngAjax) {
-                // create the instructions for select2
-                select2ajaxName = 'ajax' + formInstructions.name.replace(/\./g, '');
-                $scope[select2ajaxName] = {
-                  allowClear: !mongooseOptions.required,
-                  minimumInputLength: 2,
-                  initSelection: function (element, callback) {
-                    var theId = element.val();
-                    if (theId && theId !== '') {
-                      $http.get( $scope.apiHost + '/api/' + mongooseOptions.ref + '/' + theId + '/list').success(function (data) {
-                        if (data.success === false) {
-                          $state.go('404');
-                        }
-                        var display = {id: theId, text: data.list};
-                        $scope.setData(master, formInstructions.name, element, display);
-                        // stop the form being set to dirty
-                        var modelController = element.inheritedData('$ngModelController'),
-                          isClean = modelController.$pristine;
-                        if (isClean) {
-                          // fake it to dirty here and reset after callback()
-                          modelController.$pristine = false;
-                        }
-                        callback(display);
-                        if (isClean) {
-                          modelController.$pristine = true;
-                        }
-                      }).error(function () {
-                        $state.go('404');
-                      });
-//                                } else {
-//                                    throw new Error('select2 initSelection called without a value');
-                    }
-                  },
-                  ajax: {
-                    url: '/api/search/' + mongooseOptions.ref,
-                    data: function (term, page) { // page is the one-based page number tracked by Select2
-                      return {
-                        q: term, //search term
-                        pageLimit: 10, // page size
-                        page: page // page number
-                      };
-                    },
-                    results: function (data) {
-                      return {results: data.results, more: data.moreCount > 0};
-                    }
-                  }
-                };
-                _.extend($scope[select2ajaxName], formInstructions.select2);
-                formInstructions.select2.fngAjax = select2ajaxName;
-              } else {
-                if (formInstructions.select2 === true) {
-                  formInstructions.select2 = {};
-                }
-                $scope['select2' + formInstructions.name] = {
-                  allowClear: !mongooseOptions.required,
-                  initSelection: function (element, callback) {
-                    var myId = element.val();
-                    if (myId !== '' && $scope[formInstructions.ids].length > 0) {
-                      var myVal = convertIdToListValue(myId, $scope[formInstructions.ids], $scope[formInstructions.options], formInstructions.name);
-                      var display = {id: myId, text: myVal};
-                      callback(display);
-                    }
-                  },
-                  query: function (query) {
-                    var data = {results: []},
-                      searchString = query.term.toUpperCase();
-                    for (var i = 0; i < $scope[formInstructions.options].length; i++) {
-                      if ($scope[formInstructions.options][i].toUpperCase().indexOf(searchString) !== -1) {
-                        data.results.push({id: $scope[formInstructions.ids][i], text: $scope[formInstructions.options][i]});
-                      }
-                    }
-                    query.callback(data);
-                  }
-                };
-                _.extend($scope['select2' + formInstructions.name], formInstructions.select2);
-                formInstructions.select2.s2query = 'select2' + formInstructions.name;
-                $scope.select2List.push(formInstructions.name);
-                formInstructions.options = suffixCleanId(formInstructions, 'Options');
-                formInstructions.ids = suffixCleanId(formInstructions, '_ids');
-                setUpSelectOptions(mongooseOptions.ref, formInstructions);
-              }
-            } else {
-              formInstructions.options = suffixCleanId(formInstructions, 'Options');
-              formInstructions.ids = suffixCleanId(formInstructions, '_ids');
-              setUpSelectOptions(mongooseOptions.ref, formInstructions);
-            }
-          }
-        } else if (mongooseType.instance === 'Date') {
-          if (!formInstructions.type) {
-            if (formInstructions.readonly) {
-              formInstructions.type = 'text';
-            } else {
-              formInstructions.type = 'datetime';
-            }
-          }
-        } else if (mongooseType.instance === 'boolean') {
-          formInstructions.type = 'checkbox';
-        } else if (mongooseType.instance === 'Number') {
-          formInstructions.type = 'number';
-          formInstructions.max = mongooseOptions.max;
-          formInstructions.min = mongooseOptions.min;
-          formInstructions.step = mongooseOptions.step;
-
-          //@deprecated
-          if (mongooseOptions.min) {
-            formInstructions.add = 'min="' + mongooseOptions.min + '" ' + (formInstructions.add || '');
-          }
-          if (mongooseOptions.max) {
-            formInstructions.add = 'max="' + mongooseOptions.max + '" ' + (formInstructions.add || '');
-          }
-          if (formInstructions.step) {
-            formInstructions.add = 'step="' + formInstructions.step + '" ' + (formInstructions.add || '');
-          }
-        } else if (mongooseType.instance === 'file') {
-          formInstructions.type = 'fileuploader';
-        } else if (mongooseOptions.form && mongooseOptions.form.type === 'fileuploader') {
-          if (mongooseOptions.form.name) {
-          /*  $scope.$watchCollection('filequeue.' + mongooseOptions.form.name, function (newvar) {
-              $scope.record[mongooseOptions.form.name] = newvar;
-            });
-
-            $scope.$watchCollection('record.' + mongooseOptions.form.name, function (newvar) {
-              $scope.filequeue[mongooseOptions.form.name] = newvar;
-            });*/
-          }
-        } else if (mongooseOptions.form && mongooseOptions.form.type === 'gallery') {
-        } else {
-          throw new Error('Field ' + formInstructions.name + ' is of unsupported type ' + mongooseType.instance);
-        }
-        if (mongooseOptions.required) {
-          formInstructions.required = true;
-        }
-        if (mongooseOptions.readonly) {
-          formInstructions.readonly = true;
-        }
-        return formInstructions;
-      }
-      ;
-
-    // TODO: Do this in form
-    var basicInstructions = function (field, formData, prefix) {
-      formData.name = prefix + field;
-//        formData.id = formData.id || 'f_' + prefix + field.replace(/\./g, '_');
-//        formData.label = (formData.hasOwnProperty('label') && formData.label) == null ? '' : (formData.label || $filter('titleCase')(field));
-      return formData;
     };
 
     var handleListInfo = function (destList, listOptions, field) {
@@ -354,7 +137,7 @@ var mlcl_forms = angular.module('mlcl_forms', [
     };
 
     var evaluateConditional = function (condition, data) {
-
+      console.log('evaluateConditional');
       function evaluateSide(side) {
         var result = side;
         if (typeof side === 'string' && side.slice(0, 1) === '$') {
@@ -395,7 +178,7 @@ var mlcl_forms = angular.module('mlcl_forms', [
 //    $scope.dataDependencies is of the form {fieldName1: [fieldId1, fieldId2], fieldName2:[fieldId2]}
 
     var handleConditionals = function (condInst, name) {
-
+      console.log('handleConditionals');
       var dependency = 0;
 
       function handleVar(theVar) {
@@ -512,96 +295,7 @@ var mlcl_forms = angular.module('mlcl_forms', [
       return forceNextTime;
     };
 
-    var handleSchema = function (description, source, destForm, destList, prefix, doRecursion) {
-      function handletabInfo(tabName, thisInst) {
-        var tabTitle = angular.copy(tabName);
-        var tab = _.find($scope.tabs, function (atab) {
-          return atab.title === tabTitle;
-        });
-        if (!tab) {
-          if ($scope.tabs.length === 0) {
-            if ($scope.formSchema.length > 0) {
-              $scope.tabs.push({title: 'Main', content: []});
-              tab = $scope.tabs[0];
-              for (var i = 0; i < $scope.formSchema.length; i++) {
-                tab.content.push($scope.formSchema[i]);
-              }
-            }
-          }
-          tab = $scope.tabs[$scope.tabs.push({title: tabTitle, containerType: 'tab', content: []}) - 1];
-        }
-        tab.content.push(thisInst);
-      }
 
-      for (var field in source) {
-        if (field !== '_id' && source.hasOwnProperty(field)) {
-          var mongooseType = source[field],
-            mongooseOptions = mongooseType.options || {};
-          var formData = mongooseOptions.form || {};
-          if (!formData.hidden) {
-            if (mongooseType.schema) {
-              if (doRecursion && destForm) {
-                var schemaSchema = [];
-                handleSchema('Nested ' + field, mongooseType.schema, schemaSchema, null, field + '.', true);
-                var sectionInstructions = basicInstructions(field, formData, prefix);
-                sectionInstructions.schema = schemaSchema;
-                if (formData.tab) { handletabInfo(formData.tab, sectionInstructions); }
-                if (formData.order !== undefined) {
-                  destForm.splice(formData.order, 0, sectionInstructions);
-                } else {
-                  destForm.push(sectionInstructions);
-                }
-              }
-            } else {
-              if (destForm) {
-                var formInstructions = basicInstructions(field, formData, prefix);
-                if (handleConditionals(formInstructions.showIf, formInstructions.name) && field !== 'options') {
-                  var formInst = handleFieldType(formInstructions, mongooseType, mongooseOptions);
-                  if (formInst.tab) { handletabInfo(formInst.tab, formInst); }
-                  if (formData.order !== undefined) {
-                    destForm.splice(formData.order, 0, formInst);
-                  } else {
-                    destForm.push(formInst);
-                  }
-                }
-              }
-              if (destList) {
-                handleListInfo(destList, mongooseOptions.list, field);
-              }
-            }
-          }
-        }
-      }
-//        //if a hash is defined then make that the selected tab is displayed
-//        if ($scope.tabs.length > 0 && $location.hash()) {
-//            var tab = _.find($scope.tabs, function (atab) {
-//                return atab.title === $location.hash();
-//            });
-//
-//            if (tab) {
-//                for (var i = 0; i < $scope.tabs.length; i++) {
-//                    $scope.tabs[i].active = false;
-//                }
-//                tab.active = true;
-//            }
-//        }
-//
-//        //now add a hash for the active tab if none exists
-//        if ($scope.tabs.length > 0 && !$location.hash()) {
-//            console.log($scope.tabs[0]['title'])
-//            $location.hash($scope.tabs[0]['title']);
-//        }
-
-      if (destList && destList.length === 0) {
-        handleEmptyList(description, destList, destForm, source);
-      }
-    };
-
-    $scope.processServerData = function (recordFromServer) {
-      master = convertToAngularModel($scope.formSchema, recordFromServer, 0);
-      $scope.phase = 'ready';
-      $scope.cancel();
-    };
 
     $scope.readRecord = function () {
       $http.get( $scope.apiHost + '/api/' + $scope.modelName + '/' + $scope.id).success(function (data) {
@@ -647,42 +341,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
       });
     };
 ///api/schema/' + $scope.modelName + ($scope.formName ? '/' + $scope.formName : ''
-    $http.get( $scope.apiHost + '/api/schema/' + $scope.modelName + ($scope.formName ? '/' + $scope.formName : ''), {cache: true}).success(function (data) {
-      handleSchema('Main ' + $scope.modelName, data, $scope.formSchema, $scope.listSchema, '', true);
-
-      if (!$scope.id && !$scope.newRecord) { //this is a list. listing out contents of a collection
-        allowLocationChange = true;
-      } else {
-        var force = true;
-        $scope.$watch('record', function (newValue, oldValue) {
-          if (newValue !== oldValue) {
-            force = $scope.updateDataDependentDisplay(newValue, oldValue, force);
-          }
-        }, true);
-
-        if ($scope.id) {
-          // Going to read a record
-          if (typeof $scope.dataEventFunctions.onBeforeRead === 'function') {
-            $scope.dataEventFunctions.onBeforeRead($scope.id, function (err) {
-              if (err) {
-                $scope.showError(err);
-              } else {
-                $scope.readRecord();
-              }
-            });
-          } else {
-            $scope.readRecord();
-          }
-        } else {
-          // New record
-          master = {};
-          $scope.phase = 'ready';
-          $scope.cancel();
-        }
-      }
-    }).error(function () {
-      $state.go('404');
-    });
 
     $scope.setPristine = function () {
       $scope.dismissError();
@@ -1057,50 +715,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
         result = true;
       }
       return result;
-    };
-
-// Convert {_id:'xxx', array:['item 1'], lookup:'012abcde'} to {_id:'xxx', array:[{x:'item 1'}], lookup:'List description for 012abcde'}
-// Which is what we need for use in the browser
-    var convertToAngularModel = function (schema, anObject, prefixLength) {
-      var resultFunction = function resultFunction(array) {
-        if (array.results.length > 0) {
-          anObject[fieldname] = array.results[0];
-        }
-      };
-      for (var i = 0; i < schema.length; i++) {
-        var fieldname = schema[i].name.slice(prefixLength);
-        if (schema[i].schema) {
-          if (anObject[fieldname]) {
-            for (var j = 0; j < anObject[fieldname].length; j++) {
-              anObject[fieldname][j] = convertToAngularModel(schema[i].schema, anObject[fieldname][j], prefixLength + 1 + fieldname.length);
-            }
-          }
-        } else {
-
-          // Convert {array:['item 1']} to {array:[{x:'item 1'}]}
-          var thisField = $scope.getListData(anObject, fieldname);
-          if (schema[i].array && simpleArrayNeedsX(schema[i]) && thisField) {
-            for (var k = 0; k < thisField.length; k++) {
-              thisField[k] = {x: thisField[k] };
-            }
-          }
-
-          // Convert {lookup:'012abcde'} to {lookup:'List description for 012abcde'}
-          var idList = $scope[suffixCleanId(schema[i], '_ids')];
-          if (idList && idList.length > 0 && anObject[fieldname]) {
-            anObject[fieldname] = convertForeignKeys(schema[i], anObject[fieldname], $scope[suffixCleanId(schema[i], 'Options')], idList);
-          } else if (schema[i].select2 && !schema[i].select2.fngAjax) {
-            if (anObject[fieldname]) {
-              // Might as well use the function we set up to do the search
-              $scope[schema[i].select2.s2query].query({
-                term: anObject[fieldname],
-                callback: resultFunction
-              });
-            }
-          }
-        }
-      }
-      return anObject;
     };
 
 // Reverse the process of convertToAngularModel

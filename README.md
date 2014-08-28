@@ -11,7 +11,10 @@ Update 27th August 2014:
 
 Todo:
 - Load additional dependencies from the plugin to be able to add plugins with dependencies without changing the main module.
+- Test of loading existing contents
 - Add select boxes
 - Add file widget
 - Check reference widget
 - Add CKEditor widget
+- Add file upload widget
+- Solution for content listings

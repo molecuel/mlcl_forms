@@ -28,14 +28,17 @@
     <script type="text/javascript" src="src/app/plugins/field_string/field_string.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string_textarea/field_string_textarea.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string_url/field_string_url.js"></script>
+    <script type="text/javascript" src="src/app/services/_services.js"></script>
+    <script type="text/javascript" src="src/app/services/recordService.js"></script>
+    <script type="text/javascript" src="src/app/services/services.js"></script>
     <script type="text/javascript" src="templates-common.js"></script>
     <script type="text/javascript" src="templates-app.js"></script>
 
   </head>
   <body>
-    <div class="main" ng-init="modelName='b_using_options'">
+    <div class="main" ng-init="id='53602610f3bf0b2f86007c36';modelName='b_using_options';">
       <div ng-controller="BaseCtrl"  class="test" ui-view>
-          <form-input name="baseForm" schema="baseSchema()" formstyle="compact"></form-input>
+          <form-input name="baseForm" record="53602610f3bf0b2f86007c36" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="save()" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
       </div>
     </div>
