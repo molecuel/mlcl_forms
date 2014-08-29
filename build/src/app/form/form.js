@@ -8,12 +8,15 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
-        // initialize the api service
-
+        // Add the attributes to the scope
+        scope.attrs = attrs;
         // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
           // initialize the api service which provides the model for the form by a http api
-          var api = new ApiService(attrs.modelname, attrs.apihost);
+          var api = new ApiService(scope, attrs.modelname, attrs.apihost);
+
+          // add to scope to use it in the tempalte
+          scope.api = api;
 
           // fetch the record first
           if(attrs.record && api) {
@@ -197,9 +200,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             childScope.modelstring = modelString;
             // watch the subscope and push changes to the current scope record
             childScope.$watch('model', function(val) {
-              console.log(val);
               scope.record[childScope.modelstring] = val;
-              console.log(scope.record);
             });
             var handler = new FieldHandler(childScope);
             handler.scope = childScope;
@@ -271,7 +272,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           return myres;
 
         };
-
 
         /**
          * watch function - watch function for attrs.schema

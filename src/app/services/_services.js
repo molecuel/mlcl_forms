@@ -2,13 +2,14 @@ var mlcl_forms_services = angular.module('mlcl_forms.services', []);
 
 mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordService', function($http, SchemaService, RecordService) {
 
-  return function(modelName, apiHost) {
+  return function(directiveScope, modelName, apiHost) {
 
     var self = this;
     this.modelName = modelName;
     this.apiHost = apiHost;
     this.schemaService = new SchemaService(modelName);
-    this.recordService = new RecordService();
+    // Initialize a new instance of recordService and add SchemaService
+    this.recordService = new RecordService(this);
 
     /**
      * getSchema - Get the schema via API
@@ -35,9 +36,49 @@ mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordServ
           console.log('err');
         }
         var record = self.recordService.convertToAngularModel(self.schema, data, 0);
-        callback(null, record);
+        self.record = record;
+        callback(null, self.record);
       }).error(function (err) {
         callback(err);
+      });
+    };
+
+    this.save = function save(id, record) {
+      //Convert the lookup values into ids
+      var dataToSave = self.recordService.convertToMongoModel(self.schema, angular.copy(record), 0);
+      if (id) {
+        self.updateDocument(id, dataToSave);
+      } else {
+        self.createNew(dataToSave);
+      }
+    };
+
+    this.updateDocument = function updateDocument(id, dataToSave) {
+      directiveScope.phase = 'updating';
+      $http.post( self.apiHost + '/api/' + self.modelName + '/' + id, dataToSave).success(function (data) {
+        if(data) {
+          var record = self.recordService.convertToAngularModel(self.schema, data, 0);
+          self.record = record;
+          directiveScope.phase = 'ready';
+        }
+        /*if (data.success !== false) {
+          if (typeof $scope.dataEventFunctions.onAfterUpdate === 'function') {
+            $scope.dataEventFunctions.onAfterUpdate(data, master);
+          }
+          if (options.redirect) {
+            if (options.allowChange) {
+              allowLocationChange = true;
+            }
+            $window.location = options.redirect;
+          } else {
+            $scope.processServerData(data);
+            $scope.setPristine();
+          }
+        } else {
+          $scope.showError(data);
+        }*/
+      }).error(function(err) {
+        console.log(err);
       });
     };
   };
@@ -51,6 +92,8 @@ mlcl_forms_services.factory('schemaService', function() {
   return function(modelName) {
     var self = this;
     this.modelName = modelName;
+
+    this.select2List = [];
 
     /**
      * handleSchema - Handle the schema returned by the API
@@ -140,19 +183,20 @@ mlcl_forms_services.factory('schemaService', function() {
         }
         formInstructions.instance = mongooseType.instance.toLowerCase();
         if (mongooseType.instance === 'String') {
-          /*if (mongooseOptions.enum) {
+          if (mongooseOptions.enum) {
             formInstructions.type = formInstructions.type || 'select';
             // Hacky way to get required styling working on select controls
-            if (mongooseOptions.required) {
+            // @todo Check this to handle it in another function
+            /*if (mongooseOptions.required) {
               $scope.$watch('record.' + formInstructions.name, function (newValue) {
                 updateInvalidClasses(newValue, formInstructions.id, formInstructions.select2);
               }, true);
               setTimeout(function () {
                 updateInvalidClasses($scope.record[formInstructions.name], formInstructions.id, formInstructions.select2);
               }, 0);
-            }
+            }*/
             if (formInstructions.select2) {
-              $scope['select2' + formInstructions.name] = {
+              self['select2' + formInstructions.name] = {
                 allowClear: !mongooseOptions.required,
                 initSelection: function (element, callback) {
                   callback(element.select2('data'));
@@ -168,21 +212,21 @@ mlcl_forms_services.factory('schemaService', function() {
                   query.callback(data);
                 }
               };
-              _.extend($scope['select2' + formInstructions.name], formInstructions.select2);
+              _.extend(self['select2' + formInstructions.name], formInstructions.select2);
               formInstructions.select2.s2query = 'select2' + formInstructions.name;
-              $scope.select2List.push(formInstructions.name);
+              self.select2List.push(formInstructions.name);
             } else {
-              formInstructions.options = suffixCleanId(formInstructions, 'Options');
-              $scope[formInstructions.options] = mongooseOptions.enum;
+              formInstructions.options = self.suffixCleanId(formInstructions, 'Options');
+              self[formInstructions.options] = mongooseOptions.enum;
             }
-          } else {*/
-          if (!formInstructions.type) {
-            formInstructions.type = (formInstructions.name.toLowerCase().indexOf('password') !== -1) ? 'password' : 'text';
+          } else {
+            if (!formInstructions.type) {
+              formInstructions.type = (formInstructions.name.toLowerCase().indexOf('password') !== -1) ? 'password' : 'text';
+            }
+            if (mongooseOptions.match) {
+              formInstructions.add = 'pattern="' + mongooseOptions.match + '" ' + (formInstructions.add || '');
+            }
           }
-          if (mongooseOptions.match) {
-            formInstructions.add = 'pattern="' + mongooseOptions.match + '" ' + (formInstructions.add || '');
-          }
-          //}
         } else if (mongooseType.instance === 'ObjectID') {
           formInstructions.ref = mongooseOptions.ref;
           if (formInstructions.link && formInstructions.link.linkOnly) {
@@ -240,6 +284,17 @@ mlcl_forms_services.factory('schemaService', function() {
           formInstructions.readonly = true;
         }
         return formInstructions;
+      };
+
+      /**
+       * suffixCleanId - Create the id
+       *
+       * @param  {type} inst   description
+       * @param  {type} suffix description
+       * @return {type}        description
+       */
+      this.suffixCleanId = function suffixCleanId(inst, suffix) {
+        return (inst.id || 'f_' + inst.name).replace(/\./g, '_') + suffix;
       };
   };
 });
