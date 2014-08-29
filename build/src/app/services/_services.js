@@ -34,10 +34,10 @@ mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordServ
         if (data.success === false) {
           console.log('err');
         }
-        //var record = self.recordService.convertToAngularModel(self.schema, data, 0);
-        callback(data);
-      }).error(function () {
-        console.log('err');
+        var record = self.recordService.convertToAngularModel(self.schema, data, 0);
+        callback(null, record);
+      }).error(function (err) {
+        callback(err);
       });
     };
   };

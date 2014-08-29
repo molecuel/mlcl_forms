@@ -9,8 +9,7 @@ mlcl_forms_services.factory('recordService', function() {
     // Convert {_id:'xxx', array:['item 1'], lookup:'012abcde'} to {_id:'xxx', array:[{x:'item 1'}], lookup:'List description for 012abcde'}
     // Which is what we need for use in the browser
     this.convertToAngularModel = function (schema, anObject, prefixLength) {
-      return anObject;
-/*      var resultFunction = function resultFunction(array) {
+    /*  var resultFunction = function resultFunction(array) {
         if (array.results.length > 0) {
           anObject[fieldname] = array.results[0];
         }
@@ -47,8 +46,8 @@ mlcl_forms_services.factory('recordService', function() {
             }
           }
         }
-      }
-      return anObject;*/
+      }*/
+      return anObject;
     };
 
 

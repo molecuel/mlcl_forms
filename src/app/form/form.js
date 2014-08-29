@@ -9,22 +9,31 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
       restrict: 'EA',
       link: function (scope, element, attrs) {
         // initialize the api service
-        console.log(attrs);
+
+        // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
+          // initialize the api service which provides the model for the form by a http api
           var api = new ApiService(attrs.modelname, attrs.apihost);
 
-          // callback method to get the schema of the current model
-          api.getSchema(function(result) {
-            scope.schema = result;
-          });
-        }
-
-        scope.$watch('schema', function(newval) {
-          if(newval && attrs.record) {
-            // change record models if changed , get record via api 
-            console.log('changed');
+          // fetch the record first
+          if(attrs.record && api) {
+            api.getRecord(attrs.record, function(err, record) {
+              scope.record = record;
+              api.getSchema(function(result) {
+                if(result) {
+                  scope.schema = result;
+                }
+              });
+            });
+          } else {
+            // if no record was specified just fetch the schema
+            api.getSchema(function(result) {
+              if(result) {
+                scope.schema = result;
+              }
+            });
           }
-        });
+        }
 
         var sizeMapping = [1, 2, 4, 6, 8, 10, 12];
         var defaultSizeOffset = 2; // medium, which was the default for Twitter Bootstrap 2
@@ -188,78 +197,15 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             childScope.modelstring = modelString;
             // watch the subscope and push changes to the current scope record
             childScope.$watch('model', function(val) {
+              console.log(val);
               scope.record[childScope.modelstring] = val;
+              console.log(scope.record);
             });
             var handler = new FieldHandler(childScope);
             handler.scope = childScope;
             handler.render();
             return handler;
           }
-        };
-
-        /**
-         * containerInstructions - Add a wrapper around the field
-         *
-         * @param  {type} info description
-         * @return {type}      description
-         */
-        var containerInstructions = function containerInstructions(info) {
-          var result = {before: '', after: ''};
-          if (typeof info.containerType === 'function') {
-            result = info.containerType(info);
-          } else {
-            switch (info.containerType) {
-              case 'tab' :
-                result.before = '<tab heading="' + info.title + '">';
-                result.after = '</tab>';
-                break;
-              case 'tabset' :
-                result.before = '<tabset>';
-                result.after = '</tabset>';
-                break;
-              case 'well' :
-                result.before = '<div class="well">';
-                if (info.title) {
-                  result.before += '<h4>' + info.title + '</h4>';
-                }
-                result.after = '</div>';
-                break;
-              case 'well-large' :
-                result.before = '<div class="well well-lg well-large">';
-                result.after = '</div>';
-                break;
-              case 'well-small' :
-                result.before = '<div class="well well-sm well-small">';
-                result.after = '</div>';
-                break;
-              case 'fieldset' :
-                result.before = '<fieldset>';
-                if (info.title) {
-                  result.before += '<legend>' + info.title + '</legend>';
-                }
-                result.after = '</fieldset>';
-                break;
-              case undefined:
-                break;
-              case null:
-                break;
-              case '':
-                break;
-              default:
-                result.before = '<div class="' + info.containerType + '">';
-                if (info.title) {
-                  var titleLook = info.titleTagOrClass || 'h4';
-                  if (titleLook.match(/h[1-6]/)) {
-                    result.before += '<' + titleLook + '>' + info.title + '</' + info.titleLook + '>';
-                  } else {
-                    result.before += '<p class="' + titleLook + '">' + info.title + '</p>';
-                  }
-                }
-                result.after = '</div>';
-                break;
-            }
-          }
-          return result;
         };
 
         var handleField = function handleField(info, options) {
@@ -305,20 +251,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                   }
                 }
                 newElement += '></' + directiveName + '>';
-                callHandleField = false;
-              } else if (info.containerType) {
-                var parts = containerInstructions(info);
-                switch (info.containerType) {
-                  case 'tab' :
-                    // container instructions here
-                    break;
-                  case 'tabset' :
-                    // container instructions here
-                    break;
-                  default:
-                    // container instructions here
-                    break;
-                }
                 callHandleField = false;
               } else if (options.subkey) {
                 // Don't display fields that form part of the subkey, as they should not be edited (because in these circumstances they form some kind of key)

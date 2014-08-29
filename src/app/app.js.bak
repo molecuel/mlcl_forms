@@ -95,6 +95,215 @@ var mlcl_forms = angular.module('mlcl_forms', [
       return (inst.id || 'f_' + inst.name).replace(/\./g, '_') + suffix;
     };
 
+    var handleFieldType = function (formInstructions, mongooseType, mongooseOptions) {
+
+        var select2ajaxName;
+        if (mongooseType.caster) {
+          formInstructions.array = true;
+          mongooseType = mongooseType.caster;
+          angular.extend(mongooseOptions, mongooseType.options);
+        }
+        formInstructions.instance = mongooseType.instance.toLowerCase();
+        if (mongooseType.instance === 'String') {
+          if (mongooseOptions.enum) {
+            formInstructions.type = formInstructions.type || 'select';
+            // Hacky way to get required styling working on select controls
+            if (mongooseOptions.required) {
+              $scope.$watch('record.' + formInstructions.name, function (newValue) {
+                updateInvalidClasses(newValue, formInstructions.id, formInstructions.select2);
+              }, true);
+              setTimeout(function () {
+                updateInvalidClasses($scope.record[formInstructions.name], formInstructions.id, formInstructions.select2);
+              }, 0);
+            }
+            if (formInstructions.select2) {
+              $scope['select2' + formInstructions.name] = {
+                allowClear: !mongooseOptions.required,
+                initSelection: function (element, callback) {
+                  callback(element.select2('data'));
+                },
+                query: function (query) {
+                  var data = {results: []},
+                    searchString = query.term.toUpperCase();
+                  for (var i = 0; i < mongooseOptions.enum.length; i++) {
+                    if (mongooseOptions.enum[i].toUpperCase().indexOf(searchString) !== -1) {
+                      data.results.push({id: i, text: mongooseOptions.enum[i]});
+                    }
+                  }
+                  query.callback(data);
+                }
+              };
+              _.extend($scope['select2' + formInstructions.name], formInstructions.select2);
+              formInstructions.select2.s2query = 'select2' + formInstructions.name;
+              $scope.select2List.push(formInstructions.name);
+            } else {
+              formInstructions.options = suffixCleanId(formInstructions, 'Options');
+              $scope[formInstructions.options] = mongooseOptions.enum;
+            }
+          } else {
+            if (!formInstructions.type) {
+              formInstructions.type = (formInstructions.name.toLowerCase().indexOf('password') !== -1) ? 'password' : 'text';
+            }
+            if (mongooseOptions.match) {
+              formInstructions.add = 'pattern="' + mongooseOptions.match + '" ' + (formInstructions.add || '');
+            }
+          }
+        } else if (mongooseType.instance === 'ObjectID') {
+          formInstructions.ref = mongooseOptions.ref;
+          if (formInstructions.link && formInstructions.link.linkOnly) {
+            formInstructions.type = 'link';
+            formInstructions.linkText = formInstructions.link.text;
+            formInstructions.form = formInstructions.link.form;
+            delete formInstructions.link;
+          } else {
+            formInstructions.type = 'select';
+            if (formInstructions.select2) {
+              $scope.select2List.push(formInstructions.name);
+              if (formInstructions.select2.fngAjax) {
+                // create the instructions for select2
+                select2ajaxName = 'ajax' + formInstructions.name.replace(/\./g, '');
+                $scope[select2ajaxName] = {
+                  allowClear: !mongooseOptions.required,
+                  minimumInputLength: 2,
+                  initSelection: function (element, callback) {
+                    var theId = element.val();
+                    if (theId && theId !== '') {
+                      $http.get( $scope.apiHost + '/api/' + mongooseOptions.ref + '/' + theId + '/list').success(function (data) {
+                        if (data.success === false) {
+                          $state.go('404');
+                        }
+                        var display = {id: theId, text: data.list};
+                        $scope.setData(master, formInstructions.name, element, display);
+                        // stop the form being set to dirty
+                        var modelController = element.inheritedData('$ngModelController'),
+                          isClean = modelController.$pristine;
+                        if (isClean) {
+                          // fake it to dirty here and reset after callback()
+                          modelController.$pristine = false;
+                        }
+                        callback(display);
+                        if (isClean) {
+                          modelController.$pristine = true;
+                        }
+                      }).error(function () {
+                        $state.go('404');
+                      });
+                    }
+                  },
+                  ajax: {
+                    url: '/api/search/' + mongooseOptions.ref,
+                    data: function (term, page) { // page is the one-based page number tracked by Select2
+                      return {
+                        q: term, //search term
+                        pageLimit: 10, // page size
+                        page: page // page number
+                      };
+                    },
+                    results: function (data) {
+                      return {results: data.results, more: data.moreCount > 0};
+                    }
+                  }
+                };
+                _.extend($scope[select2ajaxName], formInstructions.select2);
+                formInstructions.select2.fngAjax = select2ajaxName;
+              } else {
+                if (formInstructions.select2 === true) {
+                  formInstructions.select2 = {};
+                }
+                $scope['select2' + formInstructions.name] = {
+                  allowClear: !mongooseOptions.required,
+                  initSelection: function (element, callback) {
+                    var myId = element.val();
+                    if (myId !== '' && $scope[formInstructions.ids].length > 0) {
+                      var myVal = convertIdToListValue(myId, $scope[formInstructions.ids], $scope[formInstructions.options], formInstructions.name);
+                      var display = {id: myId, text: myVal};
+                      callback(display);
+                    }
+                  },
+                  query: function (query) {
+                    var data = {results: []},
+                      searchString = query.term.toUpperCase();
+                    for (var i = 0; i < $scope[formInstructions.options].length; i++) {
+                      if ($scope[formInstructions.options][i].toUpperCase().indexOf(searchString) !== -1) {
+                        data.results.push({id: $scope[formInstructions.ids][i], text: $scope[formInstructions.options][i]});
+                      }
+                    }
+                    query.callback(data);
+                  }
+                };
+                _.extend($scope['select2' + formInstructions.name], formInstructions.select2);
+                formInstructions.select2.s2query = 'select2' + formInstructions.name;
+                $scope.select2List.push(formInstructions.name);
+                formInstructions.options = suffixCleanId(formInstructions, 'Options');
+                formInstructions.ids = suffixCleanId(formInstructions, '_ids');
+                setUpSelectOptions(mongooseOptions.ref, formInstructions);
+              }
+            } else {
+              formInstructions.options = suffixCleanId(formInstructions, 'Options');
+              formInstructions.ids = suffixCleanId(formInstructions, '_ids');
+              setUpSelectOptions(mongooseOptions.ref, formInstructions);
+            }
+          }
+        } else if (mongooseType.instance === 'Date') {
+          if (!formInstructions.type) {
+            if (formInstructions.readonly) {
+              formInstructions.type = 'text';
+            } else {
+              formInstructions.type = 'datetime';
+            }
+          }
+        } else if (mongooseType.instance === 'boolean') {
+          formInstructions.type = 'checkbox';
+        } else if (mongooseType.instance === 'Number') {
+          formInstructions.type = 'number';
+          formInstructions.max = mongooseOptions.max;
+          formInstructions.min = mongooseOptions.min;
+          formInstructions.step = mongooseOptions.step;
+
+          //@deprecated
+          if (mongooseOptions.min) {
+            formInstructions.add = 'min="' + mongooseOptions.min + '" ' + (formInstructions.add || '');
+          }
+          if (mongooseOptions.max) {
+            formInstructions.add = 'max="' + mongooseOptions.max + '" ' + (formInstructions.add || '');
+          }
+          if (formInstructions.step) {
+            formInstructions.add = 'step="' + formInstructions.step + '" ' + (formInstructions.add || '');
+          }
+        } else if (mongooseType.instance === 'file') {
+          formInstructions.type = 'fileuploader';
+        } else if (mongooseOptions.form && mongooseOptions.form.type === 'fileuploader') {
+          if (mongooseOptions.form.name) {
+          /*  $scope.$watchCollection('filequeue.' + mongooseOptions.form.name, function (newvar) {
+              $scope.record[mongooseOptions.form.name] = newvar;
+            });
+
+            $scope.$watchCollection('record.' + mongooseOptions.form.name, function (newvar) {
+              $scope.filequeue[mongooseOptions.form.name] = newvar;
+            });*/
+          }
+        } else if (mongooseOptions.form && mongooseOptions.form.type === 'gallery') {
+        } else {
+          throw new Error('Field ' + formInstructions.name + ' is of unsupported type ' + mongooseType.instance);
+        }
+        if (mongooseOptions.required) {
+          formInstructions.required = true;
+        }
+        if (mongooseOptions.readonly) {
+          formInstructions.readonly = true;
+        }
+        return formInstructions;
+      }
+      ;
+
+    // TODO: Do this in form
+    var basicInstructions = function (field, formData, prefix) {
+      formData.name = prefix + field;
+//        formData.id = formData.id || 'f_' + prefix + field.replace(/\./g, '_');
+//        formData.label = (formData.hasOwnProperty('label') && formData.label) == null ? '' : (formData.label || $filter('titleCase')(field));
+      return formData;
+    };
+
     var handleListInfo = function (destList, listOptions, field) {
       var listData = listOptions || {hidden: true};
       if (!listData.hidden) {
