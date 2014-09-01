@@ -159,6 +159,15 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           var handlerString3;
           var fallbackHandler = 'fallbackField';
 
+
+          /**
+           * Create field handler strings based on the information provided by the api
+           *
+           * options to find a fieldhandler:
+           * 1. By the instance type of the object
+           * 2. By the instance type of the object and the field type
+           * 3. By the instance type of the object and the field type and the widget type          
+           */
           if(fieldInfo.instance) {
             handlerString3 = fieldInfo.instance;
           }
@@ -184,16 +193,25 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             }
           }
 
+          // check if there is a fieldHandler registered for that field
           if(typeof FieldHandler === 'function') {
+            // create a new scope an inherit the parents scope prototype functions
             var childScope = scope.$new();
+
+            // check if there is already a object childScopes on the parent scope
             if(!scope.childScopes) {
               scope.childScopes = {};
             }
-            scope.childScopes[modelString] = childScope;
 
+            // add the childScope to the main scope of the form
+            scope.childScopes[modelString] = childScope;
+            // add the additional field information to the childScope
             childScope.fieldInfo = fieldInfo;
+            // add all the attributes to the childScope
             childScope.attributes = attributes;
+            // add the model record to the childScope
             childScope.model = attributes.model;
+            // set the modelString on the childScope
             childScope.modelstring = modelString;
             // watch the subscope and push changes to the current scope record
             childScope.$watch('model', function(val) {
@@ -204,8 +222,10 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             scope.$watch('record.'+modelString, function(val) {
               childScope.model = val;
             });
+            // create a new fieldHandler based on the childScope
             var handler = new FieldHandler(childScope);
             handler.scope = childScope;
+            // render the html template and add the variables
             handler.render();
             return handler;
           }
