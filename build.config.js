@@ -62,7 +62,8 @@ module.exports = {
    */
   vendor_files: {
     js: [
-      'vendor/angular-elastic/elastic.js'
+      'vendor/angular-elastic/elastic.js',
+      'vendor/ng-flow/dist/ng-flow-standalone.js'
     ],
     css: [
     ],

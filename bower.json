@@ -7,7 +7,8 @@
     "bootstrap": "~3.1",
     "angular-bootstrap": "~0.10.0",
     "angular-ui-router": "~0.2",
-    "angular-elastic": "~2.4.0"
+    "angular-elastic": "~2.4.0",
+    "ng-flow": "~2"
   },
   "dependencies": {}
 }

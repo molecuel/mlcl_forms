@@ -2,7 +2,8 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'mlcl_forms',
   // should later be provided by plugin textArea
   'monospaced.elastic',
-  'mlcl_forms.services'
+  'mlcl_forms.services',
+  'flow'
 ])
 .directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService) {
     return {
@@ -166,7 +167,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
            * options to find a fieldhandler:
            * 1. By the instance type of the object
            * 2. By the instance type of the object and the field type
-           * 3. By the instance type of the object and the field type and the widget type          
+           * 3. By the instance type of the object and the field type and the widget type
            */
           if(fieldInfo.instance) {
             handlerString3 = fieldInfo.instance;
@@ -175,13 +176,15 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           if(handlerString3 && fieldInfo.type) {
             handlerString2 = handlerString3+ ':'+ fieldInfo.type;
           }
-          fieldInfo.widget = 'datepicker';
+
           if(handlerString2 && fieldInfo.widget) {
             handlerString1 = handlerString2 + ':' + fieldInfo.widget;
           }
 
+          console.log(handlerString1);
           var FieldHandler;
           if($injector.has(handlerString1)) {
+            console.log(handlerString1);
             FieldHandler = $injector.get(handlerString1);
           } else if(typeof FieldHandler !== 'function' && $injector.has(handlerString2)) {
             FieldHandler = $injector.get(handlerString2);
@@ -318,7 +321,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
               $rootScope.$broadcast('formInputDone');
               if (scope.updateDataDependentDisplay && theRecord && Object.keys(theRecord).length > 0) {
                 // If this is not a test force the data dependent updates to the DOM
-                scope.updateDataDependentDisplay(theRecord, null, true);
+                scope.generateListQuery(theRecord, null, true);
               }
             }
           }

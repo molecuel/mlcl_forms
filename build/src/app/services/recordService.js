@@ -27,7 +27,6 @@ mlcl_forms_services.factory('recordService', function(schemaService) {
           anObject[fieldname] = array.results[0];
         }
       };
-      console.log(schema);
       for (var i = 0; i < schema.length; i++) {
         var fieldname = schema[i].name.slice(prefixLength);
         if (schema[i].schema) {

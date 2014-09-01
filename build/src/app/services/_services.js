@@ -214,13 +214,15 @@ mlcl_forms_services.factory('schemaService', function() {
      */
     this.handleFieldType = function handleFieldType(formInstructions, mongooseType, mongooseOptions) {
 
-        var select2ajaxName;
         if (mongooseType.caster) {
           formInstructions.array = true;
           mongooseType = mongooseType.caster;
           angular.extend(mongooseOptions, mongooseType.options);
         }
         formInstructions.instance = mongooseType.instance.toLowerCase();
+        if(formInstructions.type) {
+          formInstructions.type = formInstructions.type.toLowerCase();
+        }
         if (mongooseType.instance === 'String') {
           if (mongooseOptions.enum) {
             formInstructions.type = formInstructions.type || 'select';
@@ -289,7 +291,6 @@ mlcl_forms_services.factory('schemaService', function() {
           formInstructions.max = mongooseOptions.max;
           formInstructions.min = mongooseOptions.min;
           formInstructions.step = mongooseOptions.step;
-
           //@deprecated
           if (mongooseOptions.min) {
             formInstructions.add = 'min="' + mongooseOptions.min + '" ' + (formInstructions.add || '');
@@ -300,6 +301,8 @@ mlcl_forms_services.factory('schemaService', function() {
           if (formInstructions.step) {
             formInstructions.add = 'step="' + formInstructions.step + '" ' + (formInstructions.add || '');
           }
+        } else if(mongooseType.instance === 'Object') {
+          formInstructions.type = formInstructions.type || 'textarea';
         }
         if (mongooseOptions.required) {
           formInstructions.required = true;

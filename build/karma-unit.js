@@ -15,6 +15,7 @@ module.exports = function ( karma ) {
       'vendor/angular-ui-router/release/angular-ui-router.js',
       'vendor/angular-ui-utils/modules/route/route.js',
       'vendor/angular-elastic/elastic.js',
+      'vendor/ng-flow/dist/ng-flow-standalone.js',
       'build/templates-app.js',
       'build/templates-common.js',
       'vendor/angular-mocks/angular-mocks.js',
