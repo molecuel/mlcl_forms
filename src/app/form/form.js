@@ -18,24 +18,16 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           // add to scope to use it in the tempalte
           scope.api = api;
 
-          // fetch the record first
-          if(attrs.record && api) {
-            api.getRecord(attrs.record, function(err, record) {
-              scope.record = record;
-              api.getSchema(function(result) {
-                if(result) {
-                  scope.schema = result;
-                }
-              });
-            });
-          } else {
-            // if no record was specified just fetch the schema
-            api.getSchema(function(result) {
-              if(result) {
-                scope.schema = result;
+          api.getSchema(function(result) {
+            if(result) {
+              scope.schema = result;
+              if(attrs.record && api) {
+                api.getRecord(attrs.record, function(err, record) {
+                  scope.record = record;
+                });
               }
-            });
-          }
+            }
+          });
         }
 
         var sizeMapping = [1, 2, 4, 6, 8, 10, 12];
@@ -193,14 +185,20 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           }
 
           if(typeof FieldHandler === 'function') {
-            var childScope = $rootScope.$new();
+            var childScope = scope.$new();
             childScope.fieldInfo = fieldInfo;
+
             childScope.attributes = attributes;
             childScope.model = attributes.model;
             childScope.modelstring = modelString;
             // watch the subscope and push changes to the current scope record
             childScope.$watch('model', function(val) {
               scope.record[childScope.modelstring] = val;
+            });
+
+            // watch for changes on the record for the model
+            scope.$watch('record.'+modelString, function(val) {
+              childScope.model = val;
             });
             var handler = new FieldHandler(childScope);
             handler.scope = childScope;
@@ -218,7 +216,16 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
         };
 
 
-        var processInstructions = function (instructionsArray, topLevel, options) {
+
+        /**
+         * processInstructions - Process the form instructions served by the schema
+         *
+         * @param  {type} instructionsArray description
+         * @param  {type} topLevel          description
+         * @param  {type} options           description
+         * @return {type}                   description
+         */
+        var processInstructions = function processInstructions(instructionsArray, topLevel, options) {
           var myres = [];
           var parseSubkeyName = function parseSubkeyName(value, key) {
             return scope[options.subkey].path + '.' + key === info.name;
@@ -228,32 +235,9 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             for (var anInstruction = 0; anInstruction < instructionsArray.length; anInstruction++) {
               var info = instructionsArray[anInstruction];
               var callHandleField = true;
-              if (info.directive) {
-                var directiveName = info.directive;
-                var newElement = '<' + directiveName + ' model="' + (options.model || 'record') + '"';
-                var thisElement = element[0];
-                for (var i = 0; i < thisElement.attributes.length; i++) {
-                  var thisAttr = thisElement.attributes[i];
-                  switch (thisAttr.nodeName) {
-                    case 'class' :
-                      var classes = thisAttr.value.replace('ng-scope', '');
-                      if (classes.length > 0) {
-                        newElement += ' class="' + classes + '"';
-                      }
-                      break;
-                    case 'schema' :
-                      var bespokeSchemaDefName = ('bespoke_' + info.name).replace(/\./g, '_');
-                      scope[bespokeSchemaDefName] = angular.copy(info);
-                      delete scope[bespokeSchemaDefName].directive;
-                      newElement += ' schema="' + bespokeSchemaDefName + '"';
-                      break;
-                    default :
-                      newElement += ' ' + thisAttr.nodeName + '="' + thisAttr.value + '"';
-                  }
-                }
-                newElement += '></' + directiveName + '>';
-                callHandleField = false;
-              } else if (options.subkey) {
+              // Directive function has been removed
+              // check if it's a subkey
+              if (options.subkey) {
                 // Don't display fields that form part of the subkey, as they should not be edited (because in these circumstances they form some kind of key)
                 var objectToSearch = angular.isArray(scope[options.subkey]) ? scope[options.subkey][0].keyList : scope[options.subkey].keyList;
                 if (_.find(objectToSearch, parseSubkeyName)) {
@@ -261,6 +245,8 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 }
               }
 
+              // here happens the real magic to get the template and parse
+              // the data for the field type
               if (callHandleField) {
                 var res = handleField(info, options);
                 myres.push(res);
@@ -273,6 +259,11 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 
         };
 
+        scope.$watchCollection('record', function(newVal, oldVal) {
+          console.log(newVal);
+
+        });
+
         /**
          * watch function - watch function for attrs.schema
          *
@@ -281,7 +272,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
          */
         var unwatch = scope.$watch('schema', function (newValue) {
           if (newValue) {
-            newValue = angular.isArray(newValue) ? newValue : [newValue];   // otherwise some old tests stop working for no real reason
             if (newValue.length > 0) {
               unwatch();
               var elementHtml = '';
@@ -294,6 +284,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
               }
               if (theRecord === scope.topLevelFormName) { throw new Error('Model and Name must be distinct - they are both ' + theRecord); }
               if(formElement) {
+                // geht the form element
                 elementHtml = processInstructions(newValue, true, attrs);
                 // Get the form element via form factory
                 for(var i in elementHtml) {
@@ -305,51 +296,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 element.replaceWith(formElement.htmlObject);
               }
 
-              // If there are subkeys we need to fix up ng-model references when record is read
-              if (subkeys.length > 0) {
-                var unwatch2 = scope.$watch('phase', function (newValue) {
-                  if (newValue === 'ready') {
-                    unwatch2();
-                    for (var subkeyCtr = 0; subkeyCtr < subkeys.length; subkeyCtr++) {
-                      var info = subkeys[subkeyCtr],
-                        arrayOffset,
-                        matching,
-                        arrayToProcess = angular.isArray(info.subkey) ? info.subkey : [info.subkey];
-
-                      for (var thisOffset = 0; thisOffset < arrayToProcess.length; thisOffset++) {
-                        var thisSubkeyList = arrayToProcess[thisOffset].keyList;
-                        var dataVal = theRecord[info.name] = theRecord[info.name] || [];
-                        for (arrayOffset = 0; arrayOffset < dataVal.length; arrayOffset++) {
-                          matching = true;
-                          for (var keyField in thisSubkeyList) {
-                            if (thisSubkeyList.hasOwnProperty(keyField)) {
-                              // Not (currently) concerned with objects here - just simple types
-                              if (dataVal[arrayOffset][keyField] !== thisSubkeyList[keyField]) {
-                                matching = false;
-                                break;
-                              }
-                            }
-                          }
-                          if (matching) {
-                            break;
-                          }
-                        }
-                        if (!matching) {
-                          // There is no matching array element - we need to create one
-                          arrayOffset = theRecord[info.name].push(thisSubkeyList) - 1;
-                        }
-                        scope['$_arrayOffset_' + info.name.replace(/\./g, '_') + '_' + thisOffset] = arrayOffset;
-                      }
-                    }
-                  }
-                });
-              }
-
               $rootScope.$broadcast('formInputDone');
-              /*if(CKEDITOR) {
-                // Turn off automatic editor creation first.
-                CKEDITOR.disableAutoInline = true;
-              }*/
               if (scope.updateDataDependentDisplay && theRecord && Object.keys(theRecord).length > 0) {
                 // If this is not a test force the data dependent updates to the DOM
                 scope.updateDataDependentDisplay(theRecord, null, true);

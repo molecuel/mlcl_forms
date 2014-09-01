@@ -56,6 +56,7 @@ mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordServ
     this.updateDocument = function updateDocument(id, dataToSave) {
       directiveScope.phase = 'updating';
       $http.post( self.apiHost + '/api/' + self.modelName + '/' + id, dataToSave).success(function (data) {
+        console.log(self.schema);
         if(data) {
           var record = self.recordService.convertToAngularModel(self.schema, data, 0);
           self.record = record;

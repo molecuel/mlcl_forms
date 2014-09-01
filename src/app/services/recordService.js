@@ -22,12 +22,12 @@ mlcl_forms_services.factory('recordService', function(schemaService) {
      * @return {type}              description
      */
     this.convertToAngularModel = function (schema, anObject, prefixLength) {
-      return anObject;
-/*      var resultFunction = function resultFunction(array) {
+      var resultFunction = function resultFunction(array) {
         if (array.results.length > 0) {
           anObject[fieldname] = array.results[0];
         }
       };
+      console.log(schema);
       for (var i = 0; i < schema.length; i++) {
         var fieldname = schema[i].name.slice(prefixLength);
         if (schema[i].schema) {
@@ -61,7 +61,7 @@ mlcl_forms_services.factory('recordService', function(schemaService) {
           }
         }
       }
-      return anObject;*/
+      return anObject;
     };
 
 
