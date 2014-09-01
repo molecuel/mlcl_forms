@@ -186,8 +186,12 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 
           if(typeof FieldHandler === 'function') {
             var childScope = scope.$new();
-            childScope.fieldInfo = fieldInfo;
+            if(!scope.childScopes) {
+              scope.childScopes = {};
+            }
+            scope.childScopes[modelString] = childScope;
 
+            childScope.fieldInfo = fieldInfo;
             childScope.attributes = attributes;
             childScope.model = attributes.model;
             childScope.modelstring = modelString;
@@ -258,11 +262,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           return myres;
 
         };
-
-        scope.$watchCollection('record', function(newVal, oldVal) {
-          console.log(newVal);
-
-        });
 
         /**
          * watch function - watch function for attrs.schema

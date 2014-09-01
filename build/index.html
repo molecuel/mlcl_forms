@@ -35,9 +35,9 @@
 
   </head>
   <body>
-    <div class="main" ng-init="id='53602610f3bf0b2f86007c36';modelName='b_using_options';">
+    <div class="main">
       <div ng-controller="BaseCtrl"  class="test" ui-view>
-          <form-input name="baseForm" record="53602610f3bf0b2f86007c36" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
+          <form-input name="baseForm" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
       </div>
     </div>

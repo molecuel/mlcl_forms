@@ -1,6 +1,6 @@
 var mlcl_forms_services = angular.module('mlcl_forms.services', []);
 
-mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordService', function($http, SchemaService, RecordService) {
+mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', function($http, $filter, SchemaService, RecordService) {
 
   return function(directiveScope, modelName, apiHost) {
 
@@ -53,10 +53,48 @@ mlcl_forms_services.factory('apiService', ['$http', 'schemaService', 'recordServ
       }
     };
 
+    this.createNew = function (dataToSave) {
+      $http.post( self.apiHost + '/api/' + self.modelName, dataToSave).success(function (data) {
+        if (data.success === false) {
+          console.log('err');
+        }
+        console.log(data);
+      }).error(self.handleError);
+    };
+
+    this.handleError = function handleError(data, status) {
+      if ([200, 400].indexOf(status) !== -1) {
+        var errorMessage = '';
+        for (var errorField in data.errors) {
+          if (data.errors.hasOwnProperty(errorField)) {
+            errorMessage += '<li><b>' + $filter('titleCase')(errorField) + ': </b> ';
+            switch (data.errors[errorField].type) {
+              case 'enum' :
+                errorMessage += 'You need to select from the list of values';
+                break;
+              default:
+                errorMessage += data.errors[errorField].message;
+                break;
+            }
+            errorMessage += '</li>';
+          }
+        }
+        if (errorMessage.length > 0) {
+          errorMessage = data.message + '<br /><ul>' + errorMessage + '</ul>';
+        } else {
+          errorMessage = data.message || 'Error!  Sorry - No further details available.';
+        }
+        console.log(errorMessage);
+        //self.showError(errorMessage);
+      } else {
+        //self.showError(status + ' ' + JSON.stringify(data));
+      }
+    };
+
+
     this.updateDocument = function updateDocument(id, dataToSave) {
       directiveScope.phase = 'updating';
       $http.post( self.apiHost + '/api/' + self.modelName + '/' + id, dataToSave).success(function (data) {
-        console.log(self.schema);
         if(data) {
           var record = self.recordService.convertToAngularModel(self.schema, data, 0);
           self.record = record;
