@@ -295,28 +295,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
       return forceNextTime;
     };
 
-    $scope.processServerData = function (recordFromServer) {
-      master = convertToAngularModel($scope.formSchema, recordFromServer, 0);
-      $scope.phase = 'ready';
-      $scope.cancel();
-    };
-
-    $scope.readRecord = function () {
-      $http.get( $scope.apiHost + '/api/' + $scope.modelName + '/' + $scope.id).success(function (data) {
-        if (data.success === false) {
-          $state.go('404');
-        }
-        allowLocationChange = false;
-        $scope.phase = 'reading';
-        if (typeof $scope.dataEventFunctions.onAfterRead === 'function') {
-          $scope.dataEventFunctions.onAfterRead(data);
-        }
-        $scope.processServerData(data);
-      }).error(function () {
-        $state.go('404');
-      });
-    };
-
     function generateListQuery() {
       var queryString = '?l=' + $scope.pageSize,
         addParameter = function (param, value) {
@@ -353,64 +331,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
       }
     };
 
-    $scope.cancel = function () {
-
-      for (var prop in $scope.record) {
-        if ($scope.record.hasOwnProperty(prop)) {
-          delete $scope.record[prop];
-        }
-      }
-      angular.extend($scope.record, master);
-      $scope.setPristine();
-    };
-
-    //listener for any child scopes to display messages
-    // pass like this:
-    //    scope.$emit('showErrorMessage', {title: 'Your error Title', body: 'The body of the error message'});
-    // or
-    //    scope.$broadcast('showErrorMessage', {title: 'Your error Title', body: 'The body of the error message'});
-    $scope.$on('showErrorMessage', function (event, args) {
-      $scope.showError(args.body, args.title);
-    });
-
-    var handleError = function (data, status) {
-      if ([200, 400].indexOf(status) !== -1) {
-        var errorMessage = '';
-        for (var errorField in data.errors) {
-          if (data.errors.hasOwnProperty(errorField)) {
-            errorMessage += '<li><b>' + $filter('titleCase')(errorField) + ': </b> ';
-            switch (data.errors[errorField].type) {
-              case 'enum' :
-                errorMessage += 'You need to select from the list of values';
-                break;
-              default:
-                errorMessage += data.errors[errorField].message;
-                break;
-            }
-            errorMessage += '</li>';
-          }
-        }
-        if (errorMessage.length > 0) {
-          errorMessage = data.message + '<br /><ul>' + errorMessage + '</ul>';
-        } else {
-          errorMessage = data.message || 'Error!  Sorry - No further details available.';
-        }
-        $scope.showError(errorMessage);
-      } else {
-        $scope.showError(status + ' ' + JSON.stringify(data));
-      }
-    };
-
-    $scope.showError = function (errString, alertTitle) {
-      $scope.alertTitle = alertTitle ? alertTitle : 'Error!';
-      $scope.errorMessage = errString;
-    };
-
-    $scope.dismissError = function () {
-      delete $scope.errorMessage;
-    };
-
-
     $scope.deleteRecord = function (model, id) {
       $http['delete']( $scope.apiHost + '/api/' + model + '/' + id).success(function () {
         if (typeof $scope.dataEventFunctions.onAfterDelete === 'function') {
@@ -419,7 +339,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
         $location.path('/' + $scope.modelName);
       });
     };
-
 
     $scope.isCancelDisabled = function () {
       if (typeof $scope.disableFunctions.isCancelDisabled === 'function') {
@@ -548,99 +467,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
       }
       return result;
     };
-
-// Convert {_id:'xxx', array:['item 1'], lookup:'012abcde'} to {_id:'xxx', array:[{x:'item 1'}], lookup:'List description for 012abcde'}
-// Which is what we need for use in the browser
-    var convertToAngularModel = function (schema, anObject, prefixLength) {
-      var resultFunction = function resultFunction(array) {
-        if (array.results.length > 0) {
-          anObject[fieldname] = array.results[0];
-        }
-      };
-      for (var i = 0; i < schema.length; i++) {
-        var fieldname = schema[i].name.slice(prefixLength);
-        if (schema[i].schema) {
-          if (anObject[fieldname]) {
-            for (var j = 0; j < anObject[fieldname].length; j++) {
-              anObject[fieldname][j] = convertToAngularModel(schema[i].schema, anObject[fieldname][j], prefixLength + 1 + fieldname.length);
-            }
-          }
-        } else {
-
-          // Convert {array:['item 1']} to {array:[{x:'item 1'}]}
-          var thisField = $scope.getListData(anObject, fieldname);
-          if (schema[i].array && simpleArrayNeedsX(schema[i]) && thisField) {
-            for (var k = 0; k < thisField.length; k++) {
-              thisField[k] = {x: thisField[k] };
-            }
-          }
-
-          // Convert {lookup:'012abcde'} to {lookup:'List description for 012abcde'}
-          var idList = $scope[suffixCleanId(schema[i], '_ids')];
-          if (idList && idList.length > 0 && anObject[fieldname]) {
-            anObject[fieldname] = convertForeignKeys(schema[i], anObject[fieldname], $scope[suffixCleanId(schema[i], 'Options')], idList);
-          } else if (schema[i].select2 && !schema[i].select2.fngAjax) {
-            if (anObject[fieldname]) {
-              // Might as well use the function we set up to do the search
-              $scope[schema[i].select2.s2query].query({
-                term: anObject[fieldname],
-                callback: resultFunction
-              });
-            }
-          }
-        }
-      }
-      return anObject;
-    };
-
-// Reverse the process of convertToAngularModel
-    var convertToMongoModel = function (schema, anObject, prefixLength) {
-      var updateResultFunction = function updateResultFunction(value) {
-        return convertToForeignKeys(schema[i], value, $scope[suffixCleanId(schema[i], 'Options')], idList);
-      };
-      for (var i = 0; i < schema.length; i++) {
-        var fieldname = schema[i].name.slice(prefixLength);
-        var thisField = $scope.getListData(anObject, fieldname);
-
-        if (schema[i].schema) {
-          if (thisField) {
-            for (var j = 0; j < thisField.length; j++) {
-              thisField[j] = convertToMongoModel(schema[i].schema, thisField[j], prefixLength + 1 + fieldname.length);
-            }
-          }
-        } else {
-
-          // Convert {array:[{x:'item 1'}]} to {array:['item 1']}
-          if (schema[i].array && simpleArrayNeedsX(schema[i]) && thisField) {
-            for (var k = 0; k < thisField.length; k++) {
-              thisField[k] = thisField[k].x;
-            }
-          }
-
-          // Convert {lookup:'List description for 012abcde'} to {lookup:'012abcde'}
-          var idList = $scope[suffixCleanId(schema[i], '_ids')];
-          if (idList && idList.length > 0) {
-            updateObject(fieldname, anObject, updateResultFunction);
-          } else if (schema[i].select2) {
-            var lookup = $scope.getData(anObject, fieldname, null);
-            if (schema[i].select2.fngAjax) {
-              if (lookup && lookup.id) {
-                $scope.setData(anObject, fieldname, null, lookup.id);
-              }
-            } else {
-              if (lookup) {
-                $scope.setData(anObject, fieldname, null, lookup.text);
-              } else {
-                $scope.setData(anObject, fieldname, null, undefined);
-              }
-            }
-          }
-
-        }
-      }
-      return anObject;
-    };
-
 
 // Convert foreign keys into their display for selects
 // Called when the model is read and when the lookups are read
