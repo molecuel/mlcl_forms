@@ -300,21 +300,6 @@ mlcl_forms_services.factory('schemaService', function() {
           if (formInstructions.step) {
             formInstructions.add = 'step="' + formInstructions.step + '" ' + (formInstructions.add || '');
           }
-        } else if (mongooseType.instance === 'file') {
-          formInstructions.type = 'fileuploader';
-        } else if (mongooseOptions.form && mongooseOptions.form.type === 'fileuploader') {
-          if (mongooseOptions.form.name) {
-          /*  $scope.$watchCollection('filequeue.' + mongooseOptions.form.name, function (newvar) {
-              $scope.record[mongooseOptions.form.name] = newvar;
-            });
-
-            $scope.$watchCollection('record.' + mongooseOptions.form.name, function (newvar) {
-              $scope.filequeue[mongooseOptions.form.name] = newvar;
-            });*/
-          }
-        } else if (mongooseOptions.form && mongooseOptions.form.type === 'gallery') {
-        } else {
-          throw new Error('Field ' + formInstructions.name + ' is of unsupported type ' + mongooseType.instance);
         }
         if (mongooseOptions.required) {
           formInstructions.required = true;
@@ -337,39 +322,3 @@ mlcl_forms_services.factory('schemaService', function() {
       };
   };
 });
-
-           /*
-        handleSchema('Main ' + $scope.modelName, data, $scope.formSchema, $scope.listSchema, '', true);
-
-        if (!$scope.id && !$scope.newRecord) { //this is a list. listing out contents of a collection
-          allowLocationChange = true;
-        } else {
-          var force = true;
-          $scope.$watch('record', function (newValue, oldValue) {
-            if (newValue !== oldValue) {
-              force = $scope.updateDataDependentDisplay(newValue, oldValue, force);
-            }
-          }, true);
-
-          if ($scope.id) {
-            // Going to read a record
-            if (typeof $scope.dataEventFunctions.onBeforeRead === 'function') {
-              $scope.dataEventFunctions.onBeforeRead($scope.id, function (err) {
-                if (err) {
-                  $scope.showError(err);
-                } else {
-                  $scope.readRecord();
-                }
-              });
-            } else {
-              $scope.readRecord();
-            }
-          } else {
-            // New record
-            master = {};
-            $scope.phase = 'ready';
-            $scope.cancel();
-          }
-        }
-      }).error(function () {
-        $state.go('404');*/
