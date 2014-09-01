@@ -27,7 +27,7 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
           self.schema = schema;
           callback(schema);
         }
-      });
+      }).error(self.handleError);
     };
 
     this.getRecord = function getRecord(recordId, callback) {
@@ -38,9 +38,7 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         var record = self.recordService.convertToAngularModel(self.schema, data, 0);
         self.record = record;
         callback(null, self.record);
-      }).error(function (err) {
-        callback(err);
-      });
+      }).error(self.handleError);
     };
 
     this.save = function save(id, record) {
@@ -58,6 +56,8 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         if (data.success === false) {
           console.log('err');
         }
+        // What do you want to do on success??
+        //@todo
         console.log(data);
       }).error(self.handleError);
     };
