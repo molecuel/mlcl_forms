@@ -11,10 +11,16 @@ Update 27th August 2014:
 
 Todo:
 - Load additional dependencies from the plugin to be able to add plugins with dependencies without changing the main module.
-- Test of loading existing contents
-- Add select boxes
 - Add file widget
 - Check reference widget
-- Add CKEditor widget
 - Add file upload widget
 - Solution for content listings
+
+## Start developing
+
+1. checkout the repository
+2. npm install
+3. bower install
+4. grunt watch
+5. Create your changes and add your plugins
+6. grunt (to compile all the stuff into the bin directory)
