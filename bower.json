@@ -8,7 +8,9 @@
     "angular-bootstrap": "~0.10.0",
     "angular-ui-router": "~0.2",
     "angular-elastic": "~2.4.0",
-    "ng-flow": "~2"
+    "ng-flow": "~2",
+    "angular-ckeditor": "~0.2.0",
+    "ckeditor": "~4.4.4"
   },
   "dependencies": {}
 }

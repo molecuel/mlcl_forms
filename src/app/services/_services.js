@@ -223,6 +223,11 @@ mlcl_forms_services.factory('schemaService', function() {
         if(formInstructions.type) {
           formInstructions.type = formInstructions.type.toLowerCase();
         }
+
+        if(mongooseOptions.enum) {
+          formInstructions.enum = mongooseOptions.enum;
+        }
+
         if (mongooseType.instance === 'String') {
           if (mongooseOptions.enum) {
             formInstructions.type = formInstructions.type || 'select';

@@ -1,0 +1,9 @@
+<div class="form-group">
+  <label class="col-md-3 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
+  <div class="col-md-6">
+    <select ng-model="model" ng-options="enum for enum in fieldInfo.enum">
+      <option value="">-- choose color --</option>
+    </select>
+    <p class="help-block">{{fieldInfo.help}}</p>
+  </div>
+</div>

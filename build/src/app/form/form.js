@@ -3,7 +3,9 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   // should later be provided by plugin textArea
   'monospaced.elastic',
   'mlcl_forms.services',
-  'flow'
+  'flow',
+  'ui.bootstrap',
+  'ckeditor'
 ])
 .directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService) {
     return {
@@ -11,6 +13,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
       link: function (scope, element, attrs) {
         // Add the attributes to the scope
         scope.attrs = attrs;
+
         // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
           // initialize the api service which provides the model for the form by a http api
@@ -155,6 +158,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             fieldInfo.instance = 'string';
           }
 
+
           var handlerString1;
           var handlerString2;
           var handlerString3;
@@ -181,10 +185,16 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             handlerString1 = handlerString2 + ':' + fieldInfo.widget;
           }
 
-          console.log(handlerString1);
+          if(handlerString1) {
+            console.log(handlerString1);
+          } else if(handlerString2) {
+            console.log(handlerString2);
+          } else if(handlerString3) {
+            console.log(handlerString3);
+          }
+
           var FieldHandler;
           if($injector.has(handlerString1)) {
-            console.log(handlerString1);
             FieldHandler = $injector.get(handlerString1);
           } else if(typeof FieldHandler !== 'function' && $injector.has(handlerString2)) {
             FieldHandler = $injector.get(handlerString2);
@@ -304,16 +314,21 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 scope.topLevelFormName = attrs.name || 'myForm';     // Form name defaults to myForm
                 formElement = new FormFactory({name: scope.topLevelFormName});
               }
+
+
+
               if (theRecord === scope.topLevelFormName) { throw new Error('Model and Name must be distinct - they are both ' + theRecord); }
               if(formElement) {
                 // geht the form element
                 elementHtml = processInstructions(newValue, true, attrs);
+
                 // Get the form element via form factory
                 for(var i in elementHtml) {
                   if(elementHtml[i]) {
                     formElement.append(elementHtml[i].htmlObject);
                   }
                 }
+
                 // replcate the element and add the form to the html
                 element.replaceWith(formElement.htmlObject);
               }
