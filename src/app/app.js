@@ -26,11 +26,9 @@ var mlcl_forms = angular.module('mlcl_forms', [
     $scope.select2List = [];
     $scope.pageSize = 20;
     $scope.pagesLoaded = 0;
-    $scope.apiHost = 'http://localhost:3001';
     //$scope.filequeue = fileUpload.fieldData;
 
     $scope.init = function init(options) {
-      console.log('init');
       Object.keys(options).forEach(function(key) {
           $scope[key] = options[key];
       });

@@ -34,6 +34,10 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           });
         }
 
+        if(attrs.apihost) {
+          this.apihost = attrs.apihost;
+        }
+
         var sizeMapping = [1, 2, 4, 6, 8, 10, 12];
         var defaultSizeOffset = 2; // medium, which was the default for Twitter Bootstrap 2
         var subkeys = [];

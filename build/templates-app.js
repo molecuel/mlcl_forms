@@ -68,16 +68,14 @@ angular.module("plugins/field_object_file_file/field_object_file_file.tpl.html",
     "<div class=\"form-group\">\n" +
     "  <label class=\"col-md-3 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
     "  <div class=\"col-md-6\">\n" +
-    "    <div flow-init=\"\" flow-files-submitted=\"$flow.upload()\" class=\"ng-scope\">\n" +
+    "    <div flow-init=\"{target: fieldInfo.uploadPath }\" flow-name=\"$parent.flow\" flow-files-submitted=\"$flow.upload()\" class=\"ng-scope\">\n" +
     "      <div class=\"drop\" flow-drop=\"\" ng-class=\"dropClass\">\n" +
     "        <span class=\"btn btn-default\" flow-btn=\"\">Upload File<input type=\"file\" multiple=\"multiple\" style=\"visibility: hidden; position: absolute;\"></span>\n" +
     "        <span class=\"btn btn-default\" flow-btn=\"\" flow-directory=\"\" ng-show=\"$flow.supportDirectory\">Upload Folder<input type=\"file\" multiple=\"multiple\" webkitdirectory=\"webkitdirectory\" style=\"visibility: hidden; position: absolute;\"></span>\n" +
     "        <b>OR</b>\n" +
     "        Drag And Drop your file here\n" +
     "      </div>\n" +
-    "\n" +
     "      <br>\n" +
-    "\n" +
     "      <div class=\"well\">\n" +
     "        <a class=\"btn btn-small btn-success\" ng-click=\"$flow.resume()\">Resume all</a>\n" +
     "        <a class=\"btn btn-small btn-danger\" ng-click=\"$flow.pause()\">Pause all</a>\n" +
@@ -85,9 +83,27 @@ angular.module("plugins/field_object_file_file/field_object_file_file.tpl.html",
     "        <span class=\"label label-info ng-binding\">Total Size: 0bytes</span>\n" +
     "      </div>\n" +
     "\n" +
-    "      <div>\n" +
-    "\n" +
-    "        <!-- ngRepeat: file in $flow.files -->\n" +
+    "      <div ng-repeat=\"file in $flow.files\" class=\"transfer-box ng-scope ng-binding\">\n" +
+    "        {{file.name}}\n" +
+    "        <div class=\"progress\" ng-class=\"{active: file.isUploading()}\">\n" +
+    "          <div class=\"progress-bar\" role=\"progressbar\" aria-valuenow=\"100\" aria-valuemin=\"0\" aria-valuemax=\"100\" ng-style=\"{width: (file.progress() * 100) + '%'}\" style=\"width: 100%;\">\n" +
+    "            <span class=\"sr-only ng-binding\">1% Complete</span>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"btn-group\">\n" +
+    "          <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.pause()\" ng-show=\"!file.paused &amp;&amp; file.isUploading()\">\n" +
+    "            Pause\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.resume()\" ng-show=\"file.paused\">\n" +
+    "            Resume\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-danger\" ng-click=\"file.cancel()\">\n" +
+    "            Remove\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-info ng-hide\" ng-click=\"file.retry()\" ng-show=\"file.error\">\n" +
+    "            Retry\n" +
+    "          </a>\n" +
+    "        </div>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +

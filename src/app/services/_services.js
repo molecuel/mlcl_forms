@@ -23,6 +23,7 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
       }
       $http.get( self.apiHost + '/api/schema/' + self.modelName, {cache: true}).success(function (data) {
         if(data) {
+          console.log(data);
           var schema = self.schemaService.handleFormSchema(data, true, '');
           self.schema = schema;
           callback(schema);
@@ -157,7 +158,7 @@ mlcl_forms_services.factory('schemaService', function() {
           if (!formData.hidden) {
             if (mongooseType.schema) {
               if (doRecursion && destForm) {
-                var schemaSchema = self.handleSchema(mongooseType.schema, true,field + '.');
+                var schemaSchema = self.handleFormSchema(mongooseType.schema, true,field + '.');
                 var sectionInstructions = self.basicInstructions(field, formData, prefix);
                 sectionInstructions.schema = schemaSchema;
                 // tab function currently removed
