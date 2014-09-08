@@ -85,7 +85,6 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         } else {
           errorMessage = data.message || 'Error!  Sorry - No further details available.';
         }
-        console.log(errorMessage);
         //self.showError(errorMessage);
       } else {
         //self.showError(status + ' ' + JSON.stringify(data));
@@ -148,16 +147,25 @@ mlcl_forms_services.factory('schemaService', function() {
         prefix = '';
       }
       var destForm = [];
+
       // Iterate over the fields
       for (var field in source) {
         // check for subobjects
         if (field !== '_id' && source.hasOwnProperty(field)) {
           var mongooseType = source[field],
             mongooseOptions = mongooseType.options || {};
+
           var formData = mongooseOptions.form || {};
           if (!formData.hidden) {
-            if (mongooseType.schema) {
-              if (doRecursion && destForm) {
+            if (mongooseType.array) {
+              if(mongooseType.schema) {
+                var sub = self.handleSubSchema(mongooseType, field, prefix);
+                destForm.push(sub);
+              }
+              console.log('array of objects found');
+            /*  if (doRecursion && destForm) {
+                console.log(mongooseType);
+
                 var schemaSchema = self.handleFormSchema(mongooseType.schema, true,field + '.');
                 var sectionInstructions = self.basicInstructions(field, formData, prefix);
                 sectionInstructions.schema = schemaSchema;
@@ -168,7 +176,7 @@ mlcl_forms_services.factory('schemaService', function() {
                 } else {
                   destForm.push(sectionInstructions);
                 }
-              }
+              }*/
             } else {
               var formInstructions = self.basicInstructions(field, formData, prefix);
               //@todo: if (handleConditionals(formInstructions.showIf, formInstructions.name) && field !== 'options') {
@@ -187,9 +195,44 @@ mlcl_forms_services.factory('schemaService', function() {
           }
         } // end form data hidden
       } // end for
+      console.log(destForm);
       return destForm;
     };
 
+    this.handleSubSchema = function handleSubSchema(mongooseType, field, prefix) {
+      mongooseType.type = 'fieldset';
+      mongooseType.instance = 'array';
+
+      var subSchema = {
+        schema: [],
+        type: mongooseType.type,
+        instance: mongooseType.instance,
+        name: field
+      };
+
+      if(!mongooseType.options) {
+        mongooseType.options = {};
+      }
+
+      subSchema.options = mongooseType.options;
+
+      // check if there is a schema
+      if(mongooseType.schema) {
+        // iterate over the schema
+        _.each(mongooseType.schema, function(item) {
+          if(item.path === 'mlcl_form') {
+            if(item.widget) {
+              subSchema.widget = item.widget;
+            }
+          } else {
+            var formInstructions = self.basicInstructions(item.path, item, prefix);
+            var formInst = self.handleFieldType(formInstructions, item, item.options);
+            subSchema.schema.push(formInst);
+          }
+        });
+      }
+      return subSchema;
+    };
 
     /**
      * basicInstructions - returns the name with prefix
@@ -204,7 +247,6 @@ mlcl_forms_services.factory('schemaService', function() {
       return formData;
     };
 
-
     /**
      * handleFieldType - description
      *
@@ -214,12 +256,12 @@ mlcl_forms_services.factory('schemaService', function() {
      * @return {type}                  description
      */
     this.handleFieldType = function handleFieldType(formInstructions, mongooseType, mongooseOptions) {
-
         if (mongooseType.caster) {
           formInstructions.array = true;
           mongooseType = mongooseType.caster;
           angular.extend(mongooseOptions, mongooseType.options);
         }
+
         formInstructions.instance = mongooseType.instance.toLowerCase();
         if(formInstructions.type) {
           formInstructions.type = formInstructions.type.toLowerCase();
@@ -316,6 +358,7 @@ mlcl_forms_services.factory('schemaService', function() {
         if (mongooseOptions.readonly) {
           formInstructions.readonly = true;
         }
+
         return formInstructions;
       };
 
@@ -329,5 +372,19 @@ mlcl_forms_services.factory('schemaService', function() {
       this.suffixCleanId = function suffixCleanId(inst, suffix) {
         return (inst.id || 'f_' + inst.name).replace(/\./g, '_') + suffix;
       };
+  };
+});
+
+/**
+ * schema container handling factory
+ */
+mlcl_forms_services.factory('schemaContainerService', function() {
+
+  return function(formInstructions, model) {
+    var self = this;
+
+    this.addElement = function() {
+
+    };
   };
 });

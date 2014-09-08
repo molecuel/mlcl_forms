@@ -94,7 +94,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           if (!modelString) {
             modelString = '';
             if (options.subschema && fieldInfo.name.indexOf('.') !== -1) {
-              // Schema handling - need to massage the ngModel and the id
+              // Schema handling - need to message the ngModel and the id
               var compoundName = fieldInfo.name,
                 lastPartStart = compoundName.lastIndexOf('.'),
                 lastPart = compoundName.slice(lastPartStart + 1);
@@ -117,7 +117,10 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
               modelString += fieldInfo.name;
             }
           }
-
+/*          console.log(modelString);
+          console.log(options);
+          console.log(fieldInfo);
+*/
           var attributes = {};
 
           attributes.modelString = modelString;
@@ -189,12 +192,15 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             handlerString1 = handlerString2 + ':' + fieldInfo.widget;
           }
 
-          if(handlerString1) {
-            console.log(handlerString1);
-          } else if(handlerString2) {
-            console.log(handlerString2);
-          } else if(handlerString3) {
-            console.log(handlerString3);
+          var debugHandler = false;
+          if(debugHandler === true) {
+            if(handlerString1) {
+              console.log(handlerString1);
+            } else if(handlerString2) {
+              console.log(handlerString2);
+            } else if(handlerString3) {
+              console.log(handlerString3);
+            }
           }
 
           var FieldHandler;
@@ -249,7 +255,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
         };
 
         var handleField = function handleField(info, options) {
-          info.type = info.type || 'text';
           info.id = info.id || 'f_' + info.name.replace(/\./g, '_');
           info.label = (info.label !== undefined) ? (info.label === null ? '' : info.label) : $filter('titleCase')(info.name.split('.').slice(-1)[0]);
           var handlerReturn = generateInput(info, null, options.required, info.id, options);
@@ -319,11 +324,9 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
                 formElement = new FormFactory({name: scope.topLevelFormName});
               }
 
-
-
               if (theRecord === scope.topLevelFormName) { throw new Error('Model and Name must be distinct - they are both ' + theRecord); }
               if(formElement) {
-                // geht the form element
+                // get the form element
                 elementHtml = processInstructions(newValue, true, attrs);
 
                 // Get the form element via form factory
@@ -439,7 +442,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 })
 /**
  * Factory method to create the form itself
-**/
+ **/
 .factory('FormFactory', function($compile, $templateCache, $rootScope) {
     return function(fieldInfo, options) {
       this.options = options;
