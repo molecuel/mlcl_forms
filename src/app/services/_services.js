@@ -195,10 +195,18 @@ mlcl_forms_services.factory('schemaService', function() {
           }
         } // end form data hidden
       } // end for
-      console.log(destForm);
       return destForm;
     };
 
+
+    /**
+     * handleSubSchema - handle a subschema in an array
+     *
+     * @param  {type} mongooseType description
+     * @param  {type} field        description
+     * @param  {type} prefix       description
+     * @return {type}              description
+     */
     this.handleSubSchema = function handleSubSchema(mongooseType, field, prefix) {
       mongooseType.type = 'fieldset';
       mongooseType.instance = 'array';
@@ -221,8 +229,8 @@ mlcl_forms_services.factory('schemaService', function() {
         // iterate over the schema
         _.each(mongooseType.schema, function(item) {
           if(item.path === 'mlcl_form') {
-            if(item.widget) {
-              subSchema.widget = item.widget;
+            if(item.options && item.options.form && item.options.form.widget) {
+              subSchema.widget = item.options.form.widget;
             }
           } else {
             var formInstructions = self.basicInstructions(item.path, item, prefix);

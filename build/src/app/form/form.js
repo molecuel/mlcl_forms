@@ -89,7 +89,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
          * @param  {type} options     description
          * @return {type}             description
          */
-        var generateInput = function generateInput(fieldInfo, modelString, isRequired, idString, options) {
+        var generateInput = function generateInput(fieldInfo, modelString, isRequired, idString, options, parent) {
           var nameString;
           if (!modelString) {
             modelString = '';
@@ -192,7 +192,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             handlerString1 = handlerString2 + ':' + fieldInfo.widget;
           }
 
-          var debugHandler = false;
+          var debugHandler = true;
           if(debugHandler === true) {
             if(handlerString1) {
               console.log(handlerString1);
