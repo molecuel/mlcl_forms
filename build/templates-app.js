@@ -1,4 +1,4 @@
-angular.module('templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html']);
+angular.module('templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -9,6 +9,28 @@ angular.module("form/form.tpl.html", []).run(["$templateCache", function($templa
 angular.module("form/input.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/input.tpl.html",
     "<input id=\"{{id}}\" name=\"{{name}}\"  class=\"{{classes}}\" msd-elastic=\"{{elastic}}\"/> \n" +
+    "");
+}]);
+
+angular.module("list/list.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("list/list.tpl.html",
+    "<table class=\"table table-hover data-table\">\n" +
+    "  <thead>\n" +
+    "    <tr>\n" +
+    "      <th ng-repeat=\"listfield in listfields\">{{listfield.field}}</th>\n" +
+    "    </tr\n" +
+    "  </thead>\n" +
+    "  <tbody>\n" +
+    "    <tr ng-repeat=\"element in elements\">\n" +
+    "      <td ng-repeat=\"listfield in listfields\">{{element[listfield.field]}}</td>\n" +
+    "    </tr>\n" +
+    "  </tbody>\n" +
+    "</table>\n" +
+    "\n" +
+    "<ul class=\"pagination\">\n" +
+    "  <li><span>&laquo;</span></li>\n" +
+    "  <li ng-repeat=\"mypage in pagearray\" ng-click=\"changepage(mypage)\"><span>{{mypage}}</span></li>\n" +
+    "</ul>\n" +
     "");
 }]);
 

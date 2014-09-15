@@ -24,6 +24,7 @@
     <script type="text/javascript" src="vendor/angular-ckeditor/angular-ckeditor.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
+    <script type="text/javascript" src="src/app/list/list.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_array_fieldset_file/field_array_fieldset_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_boolean/field_boolean.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_date/field_date.js"></script>
@@ -47,6 +48,7 @@
   <body>
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test" ui-view>
+          <mlcl-form-list modelname="b_using_options" apihost="http://localhost:3001" page="1"></mlcl-form-list>
           <form-input name="baseForm" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
       </div>

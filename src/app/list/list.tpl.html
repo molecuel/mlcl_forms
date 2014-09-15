@@ -1,0 +1,17 @@
+<table class="table table-hover data-table">
+  <thead>
+    <tr>
+      <th ng-repeat="listfield in listfields">{{listfield.field}}</th>
+    </tr
+  </thead>
+  <tbody>
+    <tr ng-repeat="element in elements">
+      <td ng-repeat="listfield in listfields">{{element[listfield.field]}}</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul class="pagination">
+  <li><span>&laquo;</span></li>
+  <li ng-repeat="mypage in pagearray" ng-click="changepage(mypage)"><span>{{mypage}}</span></li>
+</ul>

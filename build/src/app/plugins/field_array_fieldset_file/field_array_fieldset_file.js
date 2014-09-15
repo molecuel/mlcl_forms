@@ -62,8 +62,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
           // push the found item to the model
           fieldScope.model.push(schema);
           // create a file index based on the id of the file
-          fieldScope.fileIndex = _.indexBy(fieldScope.model, reffield);
-          console.log(fieldScope.fieldIndex);
+          fieldScope.fileIndex = _.indexBy(fieldScope.model, reffield);          
         }
       }
     });

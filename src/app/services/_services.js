@@ -23,7 +23,6 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
       }
       $http.get( self.apiHost + '/api/schema/' + self.modelName, {cache: true}).success(function (data) {
         if(data) {
-          console.log(data);
           var schema = self.schemaService.handleFormSchema(data, true, '');
           self.schema = schema;
           callback(schema);
@@ -39,6 +38,16 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         var record = self.recordService.convertToAngularModel(self.schema, data, 0);
         self.record = record;
         callback(null, self.record);
+      }).error(self.handleError);
+    };
+
+    this.listCollection = function listCollection(page, callback) {
+      $http.get( self.apiHost + '/api/' + self.modelName).success(function (data) {
+        if (data.success === false) {
+          console.log('err');
+        }
+        console.log(data);
+        callback(null, data);
       }).error(self.handleError);
     };
 
