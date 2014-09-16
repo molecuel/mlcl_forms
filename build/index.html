@@ -22,6 +22,9 @@
     <script type="text/javascript" src="vendor/angular-elastic/elastic.js"></script>
     <script type="text/javascript" src="vendor/ng-flow/dist/ng-flow-standalone.js"></script>
     <script type="text/javascript" src="vendor/angular-ckeditor/angular-ckeditor.js"></script>
+    <script type="text/javascript" src="vendor/angular-growl/build/angular-growl.js"></script>
+    <script type="text/javascript" src="vendor/angular-sanitize/angular-sanitize.js"></script>
+    <script type="text/javascript" src="vendor/angular-animate/angular-animate.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
     <script type="text/javascript" src="src/app/list/list.js"></script>
@@ -49,6 +52,7 @@
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test" ui-view>
           <mlcl-form-list modelname="b_using_options" apihost="http://localhost:3001" page="1"></mlcl-form-list>
+           <div growl></div>
           <form-input name="baseForm" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
       </div>

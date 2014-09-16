@@ -1,9 +1,8 @@
 var mlcl_forms_services = angular.module('mlcl_forms.services', []);
 
-mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', function($http, $filter, SchemaService, RecordService) {
+mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', 'growl', function($http, $filter, SchemaService, RecordService, growl) {
 
   return function(directiveScope, modelName, apiHost) {
-
     var self = this;
     this.modelName = modelName;
     this.apiHost = apiHost;
@@ -33,8 +32,9 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
     this.getRecord = function getRecord(recordId, callback) {
       $http.get( self.apiHost + '/api/' + self.modelName + '/' + recordId).success(function (data) {
         if (data.success === false) {
-          console.log('err');
+          self.showMessage('error', 'Error while fetching record');
         }
+
         var record = self.recordService.convertToAngularModel(self.schema, data, 0);
         self.record = record;
         callback(null, self.record);
@@ -46,9 +46,8 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         if (data.success === false) {
           console.log('err');
         }
-        console.log(data);
         callback(null, data);
-      }).error(self.handleError);
+      }).error(this.handleError);
     };
 
     this.save = function save(id, record) {
@@ -77,16 +76,14 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         var errorMessage = '';
         for (var errorField in data.errors) {
           if (data.errors.hasOwnProperty(errorField)) {
-            errorMessage += '<li><b>' + $filter('titleCase')(errorField) + ': </b> ';
             switch (data.errors[errorField].type) {
               case 'enum' :
-                errorMessage += 'You need to select from the list of values';
+                errorMessage = 'You need to select from the list of values';
                 break;
               default:
-                errorMessage += data.errors[errorField].message;
+                errorMessage = data.errors[errorField].message;
                 break;
             }
-            errorMessage += '</li>';
           }
         }
         if (errorMessage.length > 0) {
@@ -94,12 +91,18 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         } else {
           errorMessage = data.message || 'Error!  Sorry - No further details available.';
         }
-        //self.showError(errorMessage);
+        self.showMessage('error', errorMessage);
       } else {
-        //self.showError(status + ' ' + JSON.stringify(data));
+        self.showMessage('error', status + ' ' + JSON.stringify(data));
       }
     };
 
+    this.showMessage = function showError(level, message) {
+      var config = {enableHtml: true, ttl: 10000};
+      if(level === 'error') {
+        growl.addErrorMessage(message, config);
+      }
+    };
 
     this.updateDocument = function updateDocument(id, dataToSave) {
       directiveScope.phase = 'updating';

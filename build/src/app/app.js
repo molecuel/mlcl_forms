@@ -3,10 +3,13 @@ var mlcl_forms = angular.module('mlcl_forms', [
   'templates-common',
   'ui.bootstrap',
   'mlcl_forms.form',
-  'mlcl_forms.list'
+  'mlcl_forms.list',
+  'angular-growl',
+  'ngSanitize',
+  'ngAnimate'
 ])
-.controller('BaseCtrl', ['$scope','$http', '$filter', '$data', '$modal', '$window',
-  function ($scope, $http, $filter, $data, $modal, $window, $state, $stateParse, fileUpload) {
+.controller('BaseCtrl', ['$scope','$http', '$filter', '$data', '$modal', '$window', 'growl',
+  function ($scope, $http, $filter, $data, $modal, $window, growl) {
     var sharedStuff = $data;
 
     sharedStuff.baseScope = $scope;

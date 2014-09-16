@@ -64,7 +64,10 @@ module.exports = {
     js: [
       'vendor/angular-elastic/elastic.js',
       'vendor/ng-flow/dist/ng-flow-standalone.js',
-      'vendor/angular-ckeditor/angular-ckeditor.js'
+      'vendor/angular-ckeditor/angular-ckeditor.js',
+      'vendor/angular-growl/build/angular-growl.js',
+      'vendor/angular-sanitize/angular-sanitize.js',
+      'vendor/angular-animate/angular-animate.js'
     ],
     css: [
     ],

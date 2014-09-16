@@ -4,7 +4,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
   'mlcl_forms.services',
   'ui.bootstrap'
 ])
-.directive('mlclFormList', ['$compile', '$injector', '$rootScope', '$filter', '$templateCache', 'apiService', function ($compile, $injector, $rootScope, $filter, $templateCache, ApiService) {
+.directive('mlclFormList', ['$compile', '$injector', '$rootScope', '$filter', '$templateCache', 'apiService', 'growl', function ($compile, $injector, $rootScope, $filter, $templateCache, ApiService, growl) {
     return {
       scope: {},
       restrict: 'EA',
@@ -26,12 +26,10 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
             pagearray.push(i);
             i++;
           }
-          console.log(pagearray);
           scope.pagearray = pagearray;
         });
 
         scope.$watch('page', function(newVal) {
-          console.log('changed');
           api.listCollection(scope.page, function(err, result) {
             if(result) {
               scope.listfields = result.listFields;
@@ -55,7 +53,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
 
           api.listCollection(scope.page, function(err, result) {
             if(result) {
-              console.log(result);
               scope.listfields = result.listFields;
               scope.elements = result.hits;
               scope.pages = result.pages;
