@@ -24,4 +24,4 @@ var fieldStringTextArea = function fieldStringText($compile, $templateCache, $ro
   };
 };
 
-formModule.factory('string:textarea:wysiwyg', fieldStringTextArea);
+formModule.factory('string:textarea:wysiwyg', ['$compile', '$templateCache', '$rootScope', fieldStringTextArea]);

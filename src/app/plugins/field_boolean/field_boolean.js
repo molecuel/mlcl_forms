@@ -4,8 +4,6 @@
 
 var formModule = angular.module('mlcl_forms.form');
 
-
-
 /**
  * fieldStringText - Function for string text rendering
  *
@@ -26,4 +24,4 @@ var fieldStringText = function fieldStringText($compile, $templateCache, $rootSc
   };
 };
 
-formModule.factory('boolean', fieldStringText);
+formModule.factory('boolean', ['$compile', '$templateCache', '$rootScope', fieldStringText]);

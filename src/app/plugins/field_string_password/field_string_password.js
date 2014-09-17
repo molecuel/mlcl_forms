@@ -25,4 +25,4 @@ var fieldStringText = function fieldStringText($compile, $templateCache, $rootSc
   };
 };
 
-formModule.factory('string:password', fieldStringText);
+formModule.factory('string:password', ['$compile', '$templateCache', '$rootScope', fieldStringText]);

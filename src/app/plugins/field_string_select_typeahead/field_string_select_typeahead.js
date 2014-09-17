@@ -25,4 +25,4 @@ var field = function field($compile, $templateCache, $rootScope) {
   };
 };
 
-formModule.factory('string:select:typeahead', field);
+formModule.factory('string:select:typeahead', ['$compile', '$templateCache', '$rootScope', field]);

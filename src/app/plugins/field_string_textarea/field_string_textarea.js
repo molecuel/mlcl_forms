@@ -24,5 +24,5 @@ var fieldStringTextArea = function fieldStringText($compile, $templateCache, $ro
   };
 };
 
-formModule.factory('string:textarea', fieldStringTextArea);
-formModule.factory('fallbackField', fieldStringTextArea);
+formModule.factory('string:textarea', ['$compile', '$templateCache', '$rootScope', fieldStringTextArea]);
+formModule.factory('fallbackField', ['$compile', '$templateCache', '$rootScope', fieldStringTextArea]);

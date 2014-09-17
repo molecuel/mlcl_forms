@@ -1,5 +1,4 @@
 mlcl_forms.form = angular.module( 'mlcl_forms.form', [
-  'mlcl_forms',
   // should later be provided by plugin textArea
   'monospaced.elastic',
   'mlcl_forms.services',
@@ -7,13 +6,42 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'ui.bootstrap',
   'ckeditor'
 ])
+/**
+ * Factory method to create the form itself
+ **/
+.factory('FormFactory', function($compile, $templateCache, $rootScope) {
+    return function(fieldInfo, options) {
+      this.options = options;
+      this.fieldInfo = fieldInfo;
+      this.scope = $rootScope.$new();
+
+      var self = this;
+      this.render = function() {
+        var inputHtml = $templateCache.get('form/form.tpl.html');
+        self.htmlObject = $compile(inputHtml)(self.scope);
+        return self;
+      };
+
+      this.append = function(htmlObject) {
+        if(!self.htmlObject) {
+          self.render();
+        }
+
+        if(self.htmlObject) {
+          self.htmlObject.append(htmlObject);
+        }
+      };
+    };
+})
 .directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService) {
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
         // Add the attributes to the scope
         scope.attrs = attrs;
-
+        if(!scope.record) {
+          scope.record = {};
+        }
         // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
           // initialize the api service which provides the model for the form by a http api
@@ -203,6 +231,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             }
           }
 
+
           var FieldHandler;
           if($injector.has(handlerString1)) {
             FieldHandler = $injector.get(handlerString1);
@@ -225,7 +254,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
             if(!scope.childScopes) {
               scope.childScopes = {};
             }
-
             // add the childScope to the main scope of the form
             scope.childScopes[modelString] = childScope;
             // add the additional field information to the childScope
@@ -439,31 +467,4 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
 
     }
 
-})
-/**
- * Factory method to create the form itself
- **/
-.factory('FormFactory', function($compile, $templateCache, $rootScope) {
-    return function(fieldInfo, options) {
-      this.options = options;
-      this.fieldInfo = fieldInfo;
-      this.scope = $rootScope.$new();
-
-      var self = this;
-      this.render = function() {
-        var inputHtml = $templateCache.get('form/form.tpl.html');
-        self.htmlObject = $compile(inputHtml)(self.scope);
-        return self;
-      };
-
-      this.append = function(htmlObject) {
-        if(!self.htmlObject) {
-          self.render();
-        }
-
-        if(self.htmlObject) {
-          self.htmlObject.append(htmlObject);
-        }
-      };
-    };
 });

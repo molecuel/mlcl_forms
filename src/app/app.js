@@ -1,6 +1,6 @@
 var mlcl_forms = angular.module('mlcl_forms', [
-  'templates-app',
-  'templates-common',
+  'mlcl_forms-templates-app',
+  'mlcl_forms-templates-common',
   'ui.bootstrap',
   'mlcl_forms.form',
   'mlcl_forms.list',
@@ -8,12 +8,9 @@ var mlcl_forms = angular.module('mlcl_forms', [
   'ngSanitize',
   'ngAnimate'
 ])
-.controller('BaseCtrl', ['$scope','$http', '$filter', '$data', '$modal', '$window', 'growl',
-  function ($scope, $http, $filter, $data, $modal, $window, growl) {
-    var sharedStuff = $data;
+.controller('BaseCtrl', ['$scope','$http', '$filter', '$modal', '$window', 'growl',
+  function ($scope, $http, $filter, $modal, $window, growl) {
 
-    sharedStuff.baseScope = $scope;
-    $scope.record = sharedStuff.record;
   }
 ])
 .controller('SaveChangesModalCtrl', ['$scope', '$modalInstance', function ($scope, $modalInstance) {
@@ -26,15 +23,6 @@ var mlcl_forms = angular.module('mlcl_forms', [
   $scope.cancel = function () {
     $modalInstance.dismiss('cancel');
   };
-}])
-.factory('$data', [function () {
-  var sharedData = {
-    record: {},
-    disableFunctions: {},
-    dataEventFunctions: {}
-  };
-  return sharedData;
-
 }])
 .filter('titleCase', [function () {
   return function (str, stripSpaces) {

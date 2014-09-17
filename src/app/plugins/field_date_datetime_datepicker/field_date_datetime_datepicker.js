@@ -26,4 +26,4 @@ var fieldStringText = function fieldStringText($compile, $templateCache, $rootSc
   };
 };
 
-formModule.factory('date:datetime:datepicker', fieldStringText);
+formModule.factory('date:datetime:datepicker', ['$compile', '$templateCache', '$rootScope', fieldStringText]);

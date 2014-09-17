@@ -25,4 +25,4 @@ var field = function field($compile, $templateCache, $rootScope) {
   };
 };
 
-formModule.factory('string:select', field);
+formModule.factory('string:select', ['$compile', '$templateCache', '$rootScope', field]);

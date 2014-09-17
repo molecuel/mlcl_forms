@@ -26,5 +26,5 @@ var fieldStringText = function fieldStringText($compile, $templateCache, $rootSc
   };
 };
 
-formModule.factory('string:text', fieldStringText);
-formModule.factory('string', fieldStringText);
+formModule.factory('string:text', ['$compile', '$templateCache', '$rootScope', fieldStringText]);
+formModule.factory('string', ['$compile', '$templateCache', '$rootScope', fieldStringText]);

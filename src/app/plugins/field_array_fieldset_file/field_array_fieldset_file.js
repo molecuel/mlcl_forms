@@ -62,7 +62,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
           // push the found item to the model
           fieldScope.model.push(schema);
           // create a file index based on the id of the file
-          fieldScope.fileIndex = _.indexBy(fieldScope.model, reffield);          
+          fieldScope.fileIndex = _.indexBy(fieldScope.model, reffield);
         }
       }
     });
@@ -93,7 +93,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
 };
 
 // publish the function as field type handler
-formModule.factory('array:fieldset:file', fieldArrayFile);
+formModule.factory('array:fieldset:file', ['$compile', '$templateCache', '$rootScope', fieldArrayFile]);
 
 /**
  * Overwrite the init function of the flow module

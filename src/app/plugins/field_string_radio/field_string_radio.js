@@ -25,4 +25,4 @@ var field = function field($compile, $templateCache, $rootScope) {
   };
 };
 
-formModule.factory('string:radio', field);
+formModule.factory('string:radio', ['$compile', '$templateCache', '$rootScope', field]);

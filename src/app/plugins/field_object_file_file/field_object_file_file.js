@@ -35,4 +35,4 @@ var fieldObjectFileFile = function fieldStringText($compile, $templateCache, $ro
   };
 };
 
-formModule.factory('object:file:file',fieldObjectFileFile);
+formModule.factory('object:file:file', ['$compile', '$templateCache', '$rootScope', fieldObjectFileFile]);
