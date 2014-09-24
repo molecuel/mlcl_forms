@@ -67,7 +67,8 @@ module.exports = {
       'vendor/angular-ckeditor/angular-ckeditor.js',
       'vendor/angular-growl/build/angular-growl.js',
       'vendor/angular-sanitize/angular-sanitize.js',
-      'vendor/angular-animate/angular-animate.js'
+      'vendor/angular-animate/angular-animate.js',
+      'vendor/angular-material/angular-material.js'
     ],
     css: [
     ],

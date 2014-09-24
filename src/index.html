@@ -24,11 +24,11 @@
   </head>
   <body>
     <div class="main">
-      <div ng-controller="BaseCtrl"  class="test" ui-view>
-          <mlcl-form-list modelname="b_using_options" apihost="http://localhost:3001" page="1"></mlcl-form-list>
+      <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
            <div growl></div>
-          <form-input name="baseForm" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
+          <form-input name="baseForm" modelname="news" record="53b67b79be241e981335e6f6" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
+          <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
       </div>
     </div>
   </body>

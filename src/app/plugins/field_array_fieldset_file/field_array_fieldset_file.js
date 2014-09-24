@@ -11,30 +11,74 @@ var formModule = angular.module('mlcl_forms.form');
  * @param  {function} $rootScope     description
  * @return {type}                description
  */
-var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootScope) {
+var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootScope, $http) {
   return function(fieldScope) {
     var self = this;
 
     // Make fieldinfo accessible via a local variable
     var fieldinfo = fieldScope.fieldInfo;
 
-    // check if the fieldinformations can be discovered via the api
-    // create the upload path for the widget
-    if(fieldScope.fieldInfo && !fieldScope.fieldInfo.uploadPath) {
-      if(fieldScope.$parent.attrs.apihost) {
-        fieldScope.fieldInfo.uploadPath = fieldScope.$parent.attrs.apihost + '/file/upload';
-      } else {
-        fieldScope.fieldInfo.uploadPath = '/file/upload';
-      }
+    var apiRootPath = '/api/file';
+    fieldScope.fieldInfo.apiRoot = apiRootPath;
+
+    if(fieldScope.$parent.attrs.apihost) {
+      fieldScope.fieldInfo.apihost = fieldScope.$parent.attrs.apihost;
     }
+
+    if(fieldScope.$parent.attrs.apihost && !fieldScope.fieldInfo.apiroot) {
+      fieldScope.fieldInfo.apiRoot = fieldScope.$parent.attrs.apihost + apiRootPath;
+    }
+
+    fieldScope.fieldInfo.uploadPath = fieldScope.fieldInfo.apiRoot + '/upload';
 
     // check if there is already a array
     if(!fieldScope.model) {
       fieldScope.model = [];
     }
 
+    /**
+     * removeFile - Remove the file from the model
+     *
+     * @param  {type} file description
+     * @return {type}      description
+     */
+    fieldScope.remove = function remove(file) {
+      _.each(fieldScope.model, function(item) {
+        if(item.file === file.file) {
+          fieldScope.model = _.without(fieldScope.model, _.findWhere(fieldScope.model, {file: item.file}));
+        }
+      });
+    };
+
+    fieldScope.fullsize = 0;
+
+    fieldScope.$watchCollection('model', function(newVal) {
+      if(!fieldScope.fileInfo) {
+        fieldScope.fileInfo = {};
+      }
+      _.each(fieldScope.model, function(item) {
+        if(item.file) {
+        $http.get(fieldScope.fieldInfo.apiRoot+'/'+item.file).
+        success(function(data, status, headers, config) {
+          fieldScope.fileInfo[item.file] = data;
+          _.each(fieldScope.fileInfo, function(fileitem) {
+            fieldScope.fullsize = fieldScope.fullsize + fileitem.length;
+          });
+        }).
+        error(function(data, status, headers, config) {
+          fieldScope.fileInfo[item.file] = {
+            name: 'Error while getting file data'
+          };
+        });
+        }
+      });
+    });
+
     fieldScope.$on('flow::fileSuccess', function(event, flow, file, fileargs) {
 
+      if(fileargs) {
+        fileargs = JSON.parse(fileargs);
+      }
       var reffield = 'file';
       // there is a subschema
       if(fieldinfo.schema) {
@@ -49,7 +93,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
 
         // check if a file id has been found
         if(fileargs.file) {
-          schema[reffield] = filargs.file;
+          schema[reffield] = fileargs.file;
         }
 
         // check if the item is already in the model
@@ -67,18 +111,6 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
       }
     });
 
-
-    /**
-     * removeFile - Remove the file from the model
-     *
-     * @param  {type} file description
-     * @return {type}      description
-     */
-    fieldScope.removeFile = function removeFile(file) {
-      file.cancel();
-    };
-
-
     /**
      * render - Render the html content and add the scope
      *
@@ -93,7 +125,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
 };
 
 // publish the function as field type handler
-formModule.factory('array:fieldset:file', ['$compile', '$templateCache', '$rootScope', fieldArrayFile]);
+formModule.factory('array:fieldset:file', ['$compile', '$templateCache', '$rootScope' , '$http', fieldArrayFile]);
 
 /**
  * Overwrite the init function of the flow module

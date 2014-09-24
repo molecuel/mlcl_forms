@@ -6,7 +6,8 @@ var mlcl_forms = angular.module('mlcl_forms', [
     'mlcl_forms.list',
     'angular-growl',
     'ngSanitize',
-    'ngAnimate'
+    'ngAnimate',
+    'ngMaterial'
   ]).controller('BaseCtrl', [
     '$scope',
     '$http',

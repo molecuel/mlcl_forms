@@ -1,7 +1,9 @@
 <div class="form-group">
-  <label class="col-md-3 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
-  <div class="col-md-6">
-    <input ng-model="model" id="{{attributes.id}}" name="{{attributes.name}}" type="checkbox" placeholder="{{attributes.placeholder}}" ng-required="{{attributes.required}}" ng-readonly="{{attributes.readonly}}" value="1"/>
-    <p class="help-block">{{fieldInfo.help}}</p>
+  <label class="col-md-2 control-label">
+    {{fieldInfo.label}}
+  </label>
+  <div class="col-md-10">
+    <material-switch ng-model="model" aria-label="fieldInfo.label">
+    </material-switch>
   </div>
 </div>

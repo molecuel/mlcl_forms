@@ -1,11 +1,12 @@
-var mlcl_forms_services = angular.module('mlcl_forms.services', []);
+var mlcl_forms_services = angular.module('mlcl_forms.services', ['angular-growl']);
 mlcl_forms_services.factory('apiService', [
   '$http',
   '$filter',
   'schemaService',
   'recordService',
   'growl',
-  function ($http, $filter, SchemaService, RecordService, growl) {
+  '$rootScope',
+  function ($http, $filter, SchemaService, RecordService, growl, $rootScope) {
     return function (directiveScope, modelName, apiHost) {
       var self = this;
       this.modelName = modelName;
@@ -34,8 +35,14 @@ mlcl_forms_services.factory('apiService', [
           callback(null, self.record);
         }).error(self.handleError);
       };
-      this.listCollection = function listCollection(page, callback) {
-        $http.get(self.apiHost + '/api/' + self.modelName).success(function (data) {
+      this.listCollection = function listCollection(page, pageSize, callback) {
+        if (!page) {
+          page = 1;
+        }
+        if (!pageSize) {
+          pageSize = 50;
+        }
+        $http.get(self.apiHost + '/api/' + self.modelName + '?page=' + page + '&pageSize=' + pageSize).success(function (data) {
           if (data.success === false) {
             console.log('err');
           }
@@ -55,7 +62,7 @@ mlcl_forms_services.factory('apiService', [
           if (data.success === false) {
             console.log('err');
           }
-          console.log(data);
+          growl.addInfoMessage('Saved');
         }).error(self.handleError);
       };
       this.handleError = function handleError(data, status) {
@@ -77,7 +84,7 @@ mlcl_forms_services.factory('apiService', [
             }
           }
           if (errorMessage.length > 0) {
-            errorMessage = data.message + '<br /><ul>' + errorMessage + '</ul>';
+            errorMessage = data.message + ': ' + errorMessage;
           } else {
             errorMessage = data.message || 'Error!  Sorry - No further details available.';
           }
@@ -87,12 +94,19 @@ mlcl_forms_services.factory('apiService', [
         }
       };
       this.showMessage = function showError(level, message) {
-        var config = {
-            enableHtml: true,
-            ttl: 10000
-          };
-        if (level === 'error') {
-          growl.addErrorMessage(message, config);
+        switch (level) {
+        case 'error':
+          growl.addErrorMessage(message);
+          break;
+        case 'warn':
+          growl.addWarnMessage(message);
+          break;
+        case 'info':
+          growl.addInfoMessage(message);
+          break;
+        case 'success':
+          growl.addSuccessMessage(message);
+          break;
         }
       };
       this.updateDocument = function updateDocument(id, dataToSave) {
@@ -102,10 +116,9 @@ mlcl_forms_services.factory('apiService', [
             var record = self.recordService.convertToAngularModel(self.schema, data, 0);
             self.record = record;
             directiveScope.phase = 'ready';
+            growl.addInfoMessage('Saved');
           }
-        }).error(function (err) {
-          console.log(err);
-        });
+        }).error(self.handleError);
       };
     };
   }
@@ -130,7 +143,6 @@ mlcl_forms_services.factory('schemaService', function () {
                 var sub = self.handleSubSchema(mongooseType, field, prefix);
                 destForm.push(sub);
               }
-              console.log('array of objects found');
             } else {
               var formInstructions = self.basicInstructions(field, formData, prefix);
               if (field !== 'options') {

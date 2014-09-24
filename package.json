@@ -1,16 +1,16 @@
 {
   "author": "Dominic Böttger",
   "name": "mlcl_forms",
-  "version": "0.3.2",
+  "version": "0.0.2",
   "homepage": "https://github.com/molecuel/mlcl_forms",
   "licenses": {
     "type": "MIT",
-    "url": "https://raw.github.com/ngbp/ngbp/master/LICENSE"
+    "url": "https://raw.github.com/molecuel/mlcl_forms/master/LICENSE"
   },
-  "bugs": "https://github.com/ngbp/ngbp/issues",
+  "bugs": "https://github.com/molecuel/mlcl_forms/issues",
   "repository": {
     "type": "git",
-    "url": "git@github.com:ngbp/ngbp.git"
+    "url": "git@github.com:molecuel/mlcl_forms.git"
   },
   "dependencies": {},
   "devDependencies": {

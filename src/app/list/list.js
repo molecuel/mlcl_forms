@@ -19,6 +19,13 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
           scope.page = 1;
         }
 
+        if(attrs.pageSize) {
+          scope.pageSize = attrs.pageSize;
+        } else {
+          scope.pageSize = 50;
+        }
+
+
         scope.$watch('pages', function(newVal) {
           var pagearray = [];
           var i = 1;
@@ -30,9 +37,21 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
         });
 
         scope.$watch('page', function(newVal) {
-          api.listCollection(scope.page, function(err, result) {
+          api.listCollection(scope.page, scope.pageSize, function(err, result) {
             if(result) {
-              scope.listfields = result.listFields;
+              if(result.listFields) {
+                scope.listfields = result.listFields;
+              }
+
+              if(!result.listFields) {
+                scope.listfields = [{
+                  field:'_id'
+                }];
+              } else if(result.listFields.length === 0) {
+                scope.listfields = [{
+                  field:'_id'
+                }];
+              }
               scope.elements = result.hits;
               scope.pages = result.pages;
             }
@@ -45,15 +64,21 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
 
         // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
+          scope.modelname = attrs.modelname;
           // initialize the api service which provides the model for the form by a http api
           var api = new ApiService(scope, attrs.modelname, attrs.apihost);
 
           // add to scope to use it in the tempalte
           scope.api = api;
 
-          api.listCollection(scope.page, function(err, result) {
+          api.listCollection(scope.page, scope.pageSize, function(err, result) {
             if(result) {
               scope.listfields = result.listFields;
+              if(!result.listFields) {
+                scope.listfields = ['_id'];
+              } else if(result.listFields.length === 0) {
+                scope.listfields = ['_id'];
+              }
               scope.elements = result.hits;
               scope.pages = result.pages;
             }

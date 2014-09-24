@@ -22,6 +22,11 @@ mlcl_forms.form = angular.module('mlcl_forms.list', [
         } else {
           scope.page = 1;
         }
+        if (attrs.pageSize) {
+          scope.pageSize = attrs.pageSize;
+        } else {
+          scope.pageSize = 50;
+        }
         scope.$watch('pages', function (newVal) {
           var pagearray = [];
           var i = 1;
@@ -32,9 +37,16 @@ mlcl_forms.form = angular.module('mlcl_forms.list', [
           scope.pagearray = pagearray;
         });
         scope.$watch('page', function (newVal) {
-          api.listCollection(scope.page, function (err, result) {
+          api.listCollection(scope.page, scope.pageSize, function (err, result) {
             if (result) {
-              scope.listfields = result.listFields;
+              if (result.listFields) {
+                scope.listfields = result.listFields;
+              }
+              if (!result.listFields) {
+                scope.listfields = [{ field: '_id' }];
+              } else if (result.listFields.length === 0) {
+                scope.listfields = [{ field: '_id' }];
+              }
               scope.elements = result.hits;
               scope.pages = result.pages;
             }
@@ -44,11 +56,17 @@ mlcl_forms.form = angular.module('mlcl_forms.list', [
           scope.page = mypage;
         };
         if (attrs.modelname) {
+          scope.modelname = attrs.modelname;
           var api = new ApiService(scope, attrs.modelname, attrs.apihost);
           scope.api = api;
-          api.listCollection(scope.page, function (err, result) {
+          api.listCollection(scope.page, scope.pageSize, function (err, result) {
             if (result) {
               scope.listfields = result.listFields;
+              if (!result.listFields) {
+                scope.listfields = ['_id'];
+              } else if (result.listFields.length === 0) {
+                scope.listfields = ['_id'];
+              }
               scope.elements = result.hits;
               scope.pages = result.pages;
             }

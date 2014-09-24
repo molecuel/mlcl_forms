@@ -88,10 +88,11 @@ mlcl_forms_services.factory('recordService', function(schemaService) {
       var updateResultFunction = function updateResultFunction(value) {
         return convertToForeignKeys(schema[i], value, $scope[self.suffixCleanId(schema[i], 'Options')], idList);
       };
+
       for (var i = 0; i < schema.length; i++) {
         var fieldname = schema[i].name.slice(prefixLength);
         var thisField = self.getListData(anObject, fieldname);
-
+        
         if (schema[i].schema) {
           if (thisField) {
             for (var j = 0; j < thisField.length; j++) {

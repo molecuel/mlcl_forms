@@ -9,7 +9,7 @@
     <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> -->
 
     <!-- compiled CSS -->
-    <link rel="stylesheet" type="text/css" href="assets/mlcl_forms-0.3.2.css" />
+    <link rel="stylesheet" type="text/css" href="assets/mlcl_forms.css" />
 
   <script type="text/javascript" src="../vendor/angular/angular.js"></script>
   <script type="text/javascript" src="../vendor/angular-ui-router/release/angular-ui-router.js"></script>
@@ -25,6 +25,7 @@
     <script type="text/javascript" src="vendor/angular-growl/build/angular-growl.js"></script>
     <script type="text/javascript" src="vendor/angular-sanitize/angular-sanitize.js"></script>
     <script type="text/javascript" src="vendor/angular-animate/angular-animate.js"></script>
+    <script type="text/javascript" src="vendor/angular-material/angular-material.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
     <script type="text/javascript" src="src/app/list/list.js"></script>
@@ -50,11 +51,11 @@
   </head>
   <body>
     <div class="main">
-      <div ng-controller="BaseCtrl"  class="test" ui-view>
-          <mlcl-form-list modelname="b_using_options" apihost="http://localhost:3001" page="1"></mlcl-form-list>
+      <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
            <div growl></div>
-          <form-input name="baseForm" modelname="b_using_options" apihost="http://localhost:3001" formstyle="compact"></form-input>
+          <form-input name="baseForm" modelname="news" record="53b67b79be241e981335e6f6" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
+          <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
       </div>
     </div>
   </body>

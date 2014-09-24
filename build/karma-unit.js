@@ -20,6 +20,7 @@ module.exports = function ( karma ) {
       'vendor/angular-growl/build/angular-growl.js',
       'vendor/angular-sanitize/angular-sanitize.js',
       'vendor/angular-animate/angular-animate.js',
+      'vendor/angular-material/angular-material.js',
       'build/mlcl_forms-templates-app.js',
       'build/mlcl_forms-templates-common.js',
       'vendor/angular-mocks/angular-mocks.js',

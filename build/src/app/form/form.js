@@ -38,7 +38,7 @@ mlcl_forms.form = angular.module('mlcl_forms.form', [
   '$templateCache',
   'FormFactory',
   'apiService',
-  function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService) {
+  function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService, growl) {
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
@@ -187,11 +187,11 @@ mlcl_forms.form = angular.module('mlcl_forms.form', [
           var debugHandler = true;
           if (debugHandler === true) {
             if (handlerString1) {
-              console.log(handlerString1);
+              console.log(attributes.nameString + ' ' + handlerString1);
             } else if (handlerString2) {
-              console.log(handlerString2);
+              console.log(attributes.nameString + ' ' + handlerString2);
             } else if (handlerString3) {
-              console.log(handlerString3);
+              console.log(attributes.nameString + ' ' + handlerString3);
             }
           }
           var FieldHandler;
@@ -216,8 +216,44 @@ mlcl_forms.form = angular.module('mlcl_forms.form', [
             childScope.attributes = attributes;
             childScope.model = attributes.model;
             childScope.modelstring = modelString;
+            var ref = function ref(obj, str) {
+              if (obj) {
+                str = str.split('.');
+                for (var i = 0; i < str.length; i++) {
+                  if (obj) {
+                    obj = obj[str[i]];
+                  } else {
+                    obj = {};
+                  }
+                }
+                return obj;
+              } else {
+                return obj;
+              }
+            };
+            var setObjByString = function (obj, str, val) {
+              var keys, key;
+              if (!str || !str.length || Object.prototype.toString.call(str) !== '[object String]') {
+                return false;
+              }
+              if (obj !== Object(obj)) {
+                obj = {};
+              }
+              keys = str.split('.');
+              while (keys.length > 1) {
+                key = keys.shift();
+                if (obj !== Object(obj)) {
+                  obj = {};
+                }
+                if (!(key in obj)) {
+                  obj[key] = {};
+                }
+                obj = obj[key];
+              }
+              return obj[keys[0]] = val;
+            };
             childScope.$watch('model', function (val) {
-              scope.record[childScope.modelstring] = val;
+              setObjByString(scope.record, childScope.modelstring, val);
             });
             scope.$watch('record.' + modelString, function (val) {
               childScope.model = val;
