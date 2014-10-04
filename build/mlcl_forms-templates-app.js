@@ -207,9 +207,6 @@ angular.module("plugins/field_object_jsonedit/field_object_jsonedit.tpl.html", [
     "      <json child=\"model\" type=\"object\" default-collapsed=\"true\"></json>\n" +
     "    </div>\n" +
     "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
-    "    <material-button ng-click=\"dialog($event)\">\n" +
-    "      Open\n" +
-    "    </material-button>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

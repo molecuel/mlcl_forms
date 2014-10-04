@@ -12,7 +12,7 @@ var formModule = angular.module('mlcl_forms.form');
  * @param  {function} $rootScope     description
  * @return {type}                description
  */
-var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $rootScope, $filter, $materialDialog) {
+var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $rootScope, $filter) {
   return function(fieldScope) {
     var self = this;
 
@@ -27,18 +27,6 @@ var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $ro
       //fieldScope.jsonString = $filter('json')(json);
     }, true);
 
-    fieldScope.$dialog = function(e){
-      $materialDialog.show({
-        template: '</head><material-dialog><div class="dialog-content"><h1> test</h1><material-button ng-click="close">Close</material-button></div></material-dialog>',
-        targetEvent: e,
-        controller: ['$scope', function($scope) {
-          fieldScope.close = function() {
-            $materialDialog.hide();
-          };
-        }]
-      });
-    };
-
     this.render = function() {
       var inputHtml = $templateCache.get('plugins/field_object_jsonedit/field_object_jsonedit.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
@@ -47,4 +35,4 @@ var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $ro
   };
 };
 
-formModule.factory('object:jsonedit', ['$compile', '$templateCache', '$rootScope', '$filter', '$materialDialog', fieldObjectJsonedit]);
+formModule.factory('object:jsonedit', ['$compile', '$templateCache', '$rootScope', '$filter', fieldObjectJsonedit]);
