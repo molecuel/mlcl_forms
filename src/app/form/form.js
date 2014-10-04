@@ -4,7 +4,8 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'mlcl_forms.services',
   'flow',
   'ui.bootstrap',
-  'ckeditor'
+  'ckeditor',
+  'JSONedit'
 ])
 /**
  * Factory method to create the form itself

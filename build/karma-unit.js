@@ -21,6 +21,8 @@ module.exports = function ( karma ) {
       'vendor/angular-sanitize/angular-sanitize.js',
       'vendor/angular-animate/angular-animate.js',
       'vendor/angular-material/angular-material.js',
+      'vendor/angular-ui-sortable/sortable.js',
+      'vendor/JSONedit/js/directives.js',
       'build/mlcl_forms-templates-app.js',
       'build/mlcl_forms-templates-common.js',
       'vendor/angular-mocks/angular-mocks.js',

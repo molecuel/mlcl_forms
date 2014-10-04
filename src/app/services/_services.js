@@ -383,7 +383,7 @@ mlcl_forms_services.factory('schemaService', function() {
             formInstructions.add = 'step="' + formInstructions.step + '" ' + (formInstructions.add || '');
           }
         } else if(mongooseType.instance === 'Object') {
-          formInstructions.type = formInstructions.type || 'textarea';
+          formInstructions.type = formInstructions.type || 'jsonedit';
         }
         if (mongooseOptions.required) {
           formInstructions.required = true;

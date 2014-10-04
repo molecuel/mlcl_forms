@@ -1,4 +1,4 @@
-angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html']);
+angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -193,6 +193,23 @@ angular.module("plugins/field_object_file_file/field_object_file_file.tpl.html",
     "      </div>\n" +
     "    </div>\n" +
     "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("plugins/field_object_jsonedit/field_object_jsonedit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_object_jsonedit/field_object_jsonedit.tpl.html",
+    "<div class=\"form-group\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "    <div class=\"jsonView\" >\n" +
+    "      <json child=\"model\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "    </div>\n" +
+    "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "    <material-button ng-click=\"dialog($event)\">\n" +
+    "      Open\n" +
+    "    </material-button>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");

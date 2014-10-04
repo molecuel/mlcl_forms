@@ -68,7 +68,10 @@ module.exports = {
       'vendor/angular-growl/build/angular-growl.js',
       'vendor/angular-sanitize/angular-sanitize.js',
       'vendor/angular-animate/angular-animate.js',
-      'vendor/angular-material/angular-material.js'
+      'vendor/angular-material/angular-material.js',
+      'vendor/angular-ui-sortable/sortable.js',
+      'vendor/jquery-ui/minified/jquery-ui.min.js',
+      'vendor/JSONedit/js/directives.js'
     ],
     css: [
     ],
