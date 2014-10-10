@@ -1,4 +1,4 @@
-angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html']);
+angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -31,6 +31,18 @@ angular.module("list/list.tpl.html", []).run(["$templateCache", function($templa
     "  <li><span>&laquo;</span></li>\n" +
     "  <li ng-repeat=\"mypage in pagearray\" ng-click=\"changepage(mypage)\"><span>{{mypage}}</span></li>\n" +
     "</ul>\n" +
+    "");
+}]);
+
+angular.module("plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html",
+    "<div class=\"form-group\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "    <widget-manager widgetmodel=\"model\"></widget-manager>\n" +
+    "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
     "");
 }]);
 
@@ -96,6 +108,20 @@ angular.module("plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.
     "");
 }]);
 
+angular.module("plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html",
+    "<div class=\"form-group\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "    <div class=\"jsonView\" >\n" +
+    "      <json child=\"model\" type=\"array\" default-collapsed=\"true\"></json>\n" +
+    "    </div>\n" +
+    "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("plugins/field_boolean/field_boolean.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("plugins/field_boolean/field_boolean.tpl.html",
     "<div class=\"form-group\">\n" +
@@ -103,7 +129,7 @@ angular.module("plugins/field_boolean/field_boolean.tpl.html", []).run(["$templa
     "    {{fieldInfo.label}}\n" +
     "  </label>\n" +
     "  <div class=\"col-md-10\">\n" +
-    "    <material-switch ng-model=\"model\" aria-label=\"fieldInfo.label\">\n" +
+    "    <material-switch ng-model=\"model\" aria-label=\"fieldInfo.label\" aria-label=\"{{fieldInfo.label}}\">\n" +
     "    </material-switch>\n" +
     "  </div>\n" +
     "</div>\n" +
@@ -212,6 +238,56 @@ angular.module("plugins/field_object_jsonedit/field_object_jsonedit.tpl.html", [
     "");
 }]);
 
+angular.module("plugins/field_objectid_file/field_objectid_file.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_objectid_file/field_objectid_file.tpl.html",
+    "<div class=\"form-group form-download\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "    <div flow-init=\"{target: fieldInfo.uploadPath }\" flow-files-submitted=\"$flow.upload()\">\n" +
+    "      <div class=\"drop\" flow-drop=\"\" ng-class=\"dropClass\">\n" +
+    "        <span class=\"btn btn-default\" flow-btn=\"\">Upload File<input type=\"file\" multiple=\"multiple\" style=\"visibility: hidden; position: absolute;\"></span>\n" +
+    "        <b>OR</b>\n" +
+    "        Drag And Drop your file here\n" +
+    "      </div>\n" +
+    "      <br>\n" +
+    "      <div class=\"well\">\n" +
+    "        <a class=\"btn btn-small btn-success\" ng-click=\"$flow.resume()\">Resume all</a>\n" +
+    "        <a class=\"btn btn-small btn-danger\" ng-click=\"$flow.pause()\">Pause all</a>\n" +
+    "        <a class=\"btn btn-small btn-info\" ng-click=\"$flow.cancel()\">Cancel all</a>\n" +
+    "        <span class=\"label label-info ng-binding\">Total Size: {{fullsize}} bytes</span>\n" +
+    "      </div>\n" +
+    "      <div class=\"progress col-md-12\" ng-show=\"$flow.isUploading() || $flow.paused\">\n" +
+    "        <material-linear-progress mode=\"determinate\" ng-value=\"$flow.progress() * 100\"></material-linear-progress>\n" +
+    "      </div>\n" +
+    "\n" +
+    "      <div class=\"col-md-12\" ng-if=\"model\">\n" +
+    "        <div class=\"col-md-6\">\n" +
+    "          <div class=\"filelabel col-md-12\">\n" +
+    "            <a href=\"{{fieldInfo.apihost + fileInfo[model].url}}\" target=\"_blank\">{{fileInfo[model].filename}}</a>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-6 btn-group\">\n" +
+    "          <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.pause()\" ng-show=\"!file.paused && file.isUploading()\">\n" +
+    "            Pause\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.resume()\" ng-show=\"file.paused\">\n" +
+    "            Resume\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-danger\" ng-click=\"remove(model)\">\n" +
+    "            Remove\n" +
+    "          </a>\n" +
+    "          <a class=\"btn btn-xs btn-info ng-hide\" ng-click=\"file.retry()\" ng-show=\"file.error\">\n" +
+    "            Retry\n" +
+    "          </a>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("plugins/field_string/field_string_text.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("plugins/field_string/field_string_text.tpl.html",
     "<div class=\"form-group\">\n" +
@@ -308,6 +384,72 @@ angular.module("plugins/field_string_url/field_string_url.tpl.html", []).run(["$
     "    <input ng-model=\"model\" id=\"{{attributes.id}}\" name=\"{{attributes.name}}\" type=\"url\" placeholder=\"{{attributes.placeholder}}\" class=\"form-control\" ng-required=\"{{attributes.required}}\" ng-readonly=\"{{attributes.readonly}}\" >\n" +
     "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
     "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("widget/html/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/html/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "    </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <div class=\"richdiv\" contenteditable=\"true\" ckeditor ng-model=\"model.data.html\"></div>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/html/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/html/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <div class=\"col-md-12 richdiv\" contenteditable=\"true\" ckeditor ng-model=\"model.data.html\"></div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("widget/widgetcontainer.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/widgetcontainer.tpl.html",
+    "<div class=\"col-md-12 widgetcontainer\">\n" +
+    "{{model.type}}\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("widget/widgetmanager.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/widgetmanager.tpl.html",
+    "<div class=\"col-md-12\">\n" +
+    "  <material-button class=\"widgetButton\" ng-click=\"showSelectWidget()\"><i class=\"fa fa-plus\"></i> Add Widget</material-button>\n" +
+    "  <div class=\"widgetPopup\" ng-show=\"showWidgetSelect\">\n" +
+    "    <ul class=\"list-group widgetselectcontainer\">\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('html')\"><i class=\"fa fa-html5\"></i>HTML Widget</material-button></li>\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('image')\"><i class=\"fa fa-picture-o\"></i>Image Widget</material-button></li>\n" +
+    "    </ul>\n" +
+    "  </div>\n" +
+    "  <widget-view-container ng-model=\"model\" widgetmodel=\"model\"></widget-view-container>\n" +
     "</div>\n" +
     "");
 }]);

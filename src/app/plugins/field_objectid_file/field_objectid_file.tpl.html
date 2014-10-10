@@ -1,0 +1,45 @@
+<div class="form-group form-download">
+  <label class="col-md-2 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
+  <div class="col-md-10">
+    <div flow-init="{target: fieldInfo.uploadPath }" flow-files-submitted="$flow.upload()">
+      <div class="drop" flow-drop="" ng-class="dropClass">
+        <span class="btn btn-default" flow-btn="">Upload File<input type="file" multiple="multiple" style="visibility: hidden; position: absolute;"></span>
+        <b>OR</b>
+        Drag And Drop your file here
+      </div>
+      <br>
+      <div class="well">
+        <a class="btn btn-small btn-success" ng-click="$flow.resume()">Resume all</a>
+        <a class="btn btn-small btn-danger" ng-click="$flow.pause()">Pause all</a>
+        <a class="btn btn-small btn-info" ng-click="$flow.cancel()">Cancel all</a>
+        <span class="label label-info ng-binding">Total Size: {{fullsize}} bytes</span>
+      </div>
+      <div class="progress col-md-12" ng-show="$flow.isUploading() || $flow.paused">
+        <material-linear-progress mode="determinate" ng-value="$flow.progress() * 100"></material-linear-progress>
+      </div>
+
+      <div class="col-md-12" ng-if="model">
+        <div class="col-md-6">
+          <div class="filelabel col-md-12">
+            <a href="{{fieldInfo.apihost + fileInfo[model].url}}" target="_blank">{{fileInfo[model].filename}}</a>
+          </div>
+        </div>
+        <div class="col-md-6 btn-group">
+          <a class="btn btn-xs btn-warning ng-hide" ng-click="file.pause()" ng-show="!file.paused && file.isUploading()">
+            Pause
+          </a>
+          <a class="btn btn-xs btn-warning ng-hide" ng-click="file.resume()" ng-show="file.paused">
+            Resume
+          </a>
+          <a class="btn btn-xs btn-danger" ng-click="remove(model)">
+            Remove
+          </a>
+          <a class="btn btn-xs btn-info ng-hide" ng-click="file.retry()" ng-show="file.error">
+            Retry
+          </a>
+        </div>
+      </div>
+    </div>
+    <p class="help-block">{{fieldInfo.help}}</p>
+  </div>
+</div>

@@ -62,6 +62,9 @@ module.exports = {
    */
   vendor_files: {
     js: [
+      'vendor/jquery/jquery.js',
+      'vendor/jquery-ui/jquery-ui.js',
+      'vendor/hammerjs/dist/hammer.js',
       'vendor/angular-elastic/elastic.js',
       'vendor/ng-flow/dist/ng-flow-standalone.js',
       'vendor/angular-ckeditor/angular-ckeditor.js',
@@ -70,8 +73,9 @@ module.exports = {
       'vendor/angular-animate/angular-animate.js',
       'vendor/angular-material/angular-material.js',
       'vendor/angular-ui-sortable/sortable.js',
-      'vendor/jquery-ui/minified/jquery-ui.min.js',
-      'vendor/JSONedit/js/directives.js'
+      'vendor/JSONedit/js/directives.js',
+      'vendor/ngDialog/js/ngDialog.js',
+      'vendor/angular-aria/angular-aria.js',
     ],
     css: [
     ],

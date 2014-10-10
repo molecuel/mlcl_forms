@@ -1,0 +1,10 @@
+<div class="col-md-12">
+  <material-button class="widgetButton" ng-click="showSelectWidget()"><i class="fa fa-plus"></i> Add Widget</material-button>
+  <div class="widgetPopup" ng-show="showWidgetSelect">
+    <ul class="list-group widgetselectcontainer">
+      <li class="col-md-6 list-group-item addwidget"><material-button ng-click="addWidget('html')"><i class="fa fa-html5"></i>HTML Widget</material-button></li>
+      <li class="col-md-6 list-group-item addwidget"><material-button ng-click="addWidget('image')"><i class="fa fa-picture-o"></i>Image Widget</material-button></li>
+    </ul>
+  </div>
+  <widget-view-container ng-model="model" widgetmodel="model"></widget-view-container>
+</div>

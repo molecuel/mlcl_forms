@@ -1,0 +1,20 @@
+<div class="col-md-12 widgetview">
+  <div class="widget-button-group">
+    <material-button class="material-button-fab fab-sm" ng-click="$parent.moveUp(model)" tabindex="-1" aria-label="">
+      <i class="fa fa-sort-up"></i>
+    </material-button>
+    <material-button class="material-button-fab fab-sm" ng-click="$parent.moveDown(model)" tabindex="-1" aria-label="">
+      <i class="fa fa-sort-down"></i>
+    </material-button>
+    <material-button class="material-button-fab fab-sm" ng-click="$parent.edit(model, this)" tabindex="-1" aria-label="">
+      <i class="fa fa-edit"></i>
+    </material-button>
+    <material-button class="material-button-fab fab-sm" ng-click="$parent.settings(model, this)" tabindex="-1" aria-label="">
+      <i class="fa fa-bars"></i>
+    </material-button>
+    <material-button class="material-button-fab fab-sm" ng-click="$parent.remove(model)" tabindex="-1" aria-label="">
+      <i class="fa fa-times"></i>
+    </material-button>
+  </div>
+  <div class="col-md-12 richdiv" contenteditable="true" ckeditor ng-model="model.data.html"></div>
+</div>

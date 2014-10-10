@@ -31,9 +31,8 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
 
     fieldScope.fieldInfo.uploadPath = fieldScope.fieldInfo.apiRoot + '/upload';
 
-    // check if there is already a array
-    if(!fieldScope.model) {
-      fieldScope.model = [];
+    if(!fieldScope.fileInfo) {
+      fieldScope.fileInfo = {};
     }
 
     /**
@@ -43,35 +42,28 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
      * @return {type}      description
      */
     fieldScope.remove = function remove(file) {
-      _.each(fieldScope.model, function(item) {
-        if(item.file === file.file) {
-          fieldScope.model = _.without(fieldScope.model, _.findWhere(fieldScope.model, {file: item.file}));
-        }
-      });
+      fieldScope.model = null;
     };
 
     fieldScope.fullsize = 0;
 
-    fieldScope.$watchCollection('model', function(newVal) {
-      if(!fieldScope.fileInfo) {
-        fieldScope.fileInfo = {};
-      }
-      _.each(fieldScope.model, function(item) {
-        if(item.file) {
-        $http.get(fieldScope.fieldInfo.apiRoot+'/'+item.file).
+    fieldScope.$watch('model', function(newVal) {
+      if(newVal) {
+        $http.get(fieldScope.fieldInfo.apiRoot+'/'+newVal).
         success(function(data, status, headers, config) {
-          fieldScope.fileInfo[item.file] = data;
+          fieldScope.fileInfo[newVal] = data;
           _.each(fieldScope.fileInfo, function(fileitem) {
             fieldScope.fullsize = fieldScope.fullsize + fileitem.length;
           });
         }).
         error(function(data, status, headers, config) {
-          fieldScope.fileInfo[item.file] = {
+          fieldScope.fileInfo[newVal] = {
             name: 'Error while getting file data'
           };
         });
-        }
-      });
+      } else {
+        fieldScope.fullsize = 0;
+      }
     });
 
     fieldScope.$on('flow::fileSuccess', function(event, flow, file, fileargs) {
@@ -79,35 +71,9 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
       if(fileargs) {
         fileargs = JSON.parse(fileargs);
       }
-      var reffield = 'file';
-      // there is a subschema
-      if(fieldinfo.schema) {
-        // check if there is another field specified as file ref field
-        // if not default
-        if(fieldinfo.options.filereffield) {
-          reffield = fieldinfo.options.filerefffield;
-        }
 
-        // create a object for the file
-        var schema = {};
-
-        // check if a file id has been found
-        if(fileargs.file) {
-          schema[reffield] = fileargs.file;
-        }
-
-        // check if the item is already in the model
-        var foundItem = _.find(fieldScope.model, function(item) {
-          return item[reffield] == fileargs.file;
-        });
-
-        // if the object is not yet in the model scope, add it and create the index
-        if(!foundItem && fileargs.file) {
-          // push the found item to the model
-          fieldScope.model.push(schema);
-          // create a file index based on the id of the file
-          fieldScope.fileIndex = _.indexBy(fieldScope.model, reffield);
-        }
+      if(fileargs.file) {
+        fieldScope.model = fileargs.file;
       }
     });
 
@@ -117,7 +83,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
      * @return {type}  description
      */
     this.render = function render() {
-      var inputHtml = $templateCache.get('plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html');
+      var inputHtml = $templateCache.get('plugins/field_objectid_file/field_objectid_file.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
       return this;
     };
@@ -125,7 +91,7 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
 };
 
 // publish the function as field type handler
-formModule.factory('array:fieldset:file', ['$compile', '$templateCache', '$rootScope' , '$http', fieldArrayFile]);
+formModule.factory('objectid:file', ['$compile', '$templateCache', '$rootScope' , '$http', fieldArrayFile]);
 
 /**
  * Overwrite the init function of the flow module

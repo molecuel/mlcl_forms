@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- font awesome from BootstrapCDN -->
-    <!--<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet"> -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
 
     <!-- compiled CSS -->
     <link rel="stylesheet" type="text/css" href="assets/mlcl_forms.css" />
 
+  <script type="text/javascript" src="../vendor/jquery/jquery.js"></script>
+  <script type="text/javascript" src="../vendor/jquery-ui/jquery-ui.js"></script>
   <script type="text/javascript" src="../vendor/angular/angular.js"></script>
   <script type="text/javascript" src="../vendor/angular-ui-router/release/angular-ui-router.js"></script>
   <script type="text/javascript" src="../vendor/angular-bootstrap/ui-bootstrap.js"></script>
@@ -19,6 +21,9 @@
   <script type="text/javascript" src="../vendor/ckeditor/ckeditor.js"></script>
 
     <!-- compiled JavaScript -->
+    <script type="text/javascript" src="vendor/jquery/jquery.js"></script>
+    <script type="text/javascript" src="vendor/jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="vendor/hammerjs/dist/hammer.js"></script>
     <script type="text/javascript" src="vendor/angular-elastic/elastic.js"></script>
     <script type="text/javascript" src="vendor/ng-flow/dist/ng-flow-standalone.js"></script>
     <script type="text/javascript" src="vendor/angular-ckeditor/angular-ckeditor.js"></script>
@@ -28,16 +33,21 @@
     <script type="text/javascript" src="vendor/angular-material/angular-material.js"></script>
     <script type="text/javascript" src="vendor/angular-ui-sortable/sortable.js"></script>
     <script type="text/javascript" src="vendor/JSONedit/js/directives.js"></script>
+    <script type="text/javascript" src="vendor/ngDialog/js/ngDialog.js"></script>
+    <script type="text/javascript" src="vendor/angular-aria/angular-aria.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
     <script type="text/javascript" src="src/app/list/list.js"></script>
+    <script type="text/javascript" src="src/app/plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_array_fieldset_file/field_array_fieldset_file.js"></script>
+    <script type="text/javascript" src="src/app/plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_boolean/field_boolean.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_date/field_date.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_number/field_number.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_object_file_file/field_object_file_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_object_jsonedit/field_object_jsonedit.js"></script>
+    <script type="text/javascript" src="src/app/plugins/field_objectid_file/field_objectid_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string/field_string.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string_password/field_string_password.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string_radio/field_string_radio.js"></script>
@@ -48,6 +58,8 @@
     <script type="text/javascript" src="src/app/plugins/field_string_url/field_string_url.js"></script>
     <script type="text/javascript" src="src/app/services/_services.js"></script>
     <script type="text/javascript" src="src/app/services/recordService.js"></script>
+    <script type="text/javascript" src="src/app/widget/app.js"></script>
+    <script type="text/javascript" src="src/app/widget/html/html.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-common.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-app.js"></script>
 
@@ -56,7 +68,7 @@
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
            <div growl></div>
-          <form-input name="baseForm" modelname="page" record="" apihost="http://localhost:3000" formstyle="compact"></form-input>
+          <form-input name="baseForm" modelname="page" record="540daf465be9a5000058f35f" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
           <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
       </div>

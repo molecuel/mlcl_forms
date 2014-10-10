@@ -187,6 +187,9 @@ mlcl_forms_services.factory('schemaService', function() {
               if(mongooseType.schema) {
                 var sub = self.handleSubSchema(mongooseType, field, prefix);
                 destForm.push(sub);
+              } else if(mongooseType.caster) {
+                var subArr = self.handleSubSchema(mongooseType, field, prefix);
+                destForm.push(subArr);
               }
             /*  if (doRecursion && destForm) {
                 console.log(mongooseType);
@@ -263,6 +266,11 @@ mlcl_forms_services.factory('schemaService', function() {
             subSchema.schema.push(formInst);
           }
         });
+      } else if(mongooseType.caster) {
+        var caster = mongooseType.caster;
+        if(caster.options && caster.options.form && caster.options.form.arraywidget) {
+          subSchema.widget = caster.options.form.widget;
+        }
       }
       return subSchema;
     };

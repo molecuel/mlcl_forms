@@ -2,6 +2,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   // should later be provided by plugin textArea
   'monospaced.elastic',
   'mlcl_forms.services',
+  'mlcl_forms.widget',
   'flow',
   'ui.bootstrap',
   'ckeditor',

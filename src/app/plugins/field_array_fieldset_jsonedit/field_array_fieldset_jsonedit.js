@@ -28,11 +28,11 @@ var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $ro
     }, true);
 
     this.render = function() {
-      var inputHtml = $templateCache.get('plugins/field_object_jsonedit/field_object_jsonedit.tpl.html');
+      var inputHtml = $templateCache.get('plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html');
       self.htmlObject = $compile(inputHtml)(fieldScope);
       return this;
     };
   };
 };
 
-formModule.factory('object:jsonedit', ['$compile', '$templateCache', '$rootScope', '$filter', fieldObjectJsonedit]);
+formModule.factory('array:fieldset:jsonedit', ['$compile', '$templateCache', '$rootScope', '$filter', fieldObjectJsonedit]);
