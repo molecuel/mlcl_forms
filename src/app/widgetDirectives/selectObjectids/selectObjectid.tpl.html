@@ -1,0 +1,12 @@
+<ui-select multiple ng-model="selected.selected" theme="select2" ng-disabled="disabled" style="width: 800px;" reset-search-input="false">
+  <ui-select-match placeholder="Add items...">{{$item.text}}</ui-select-match>
+  <ui-select-choices repeat="item in foundObjects"
+  refresh="refreshObjects($select.search)"
+  refresh-delay="0">
+    <div ng-bind-html="item.text | highlight: $select.search"></div>
+    <small>
+      {{item.text}}
+    </small>
+  </ui-select-choices>
+</ui-select>
+{{selectedObject}}

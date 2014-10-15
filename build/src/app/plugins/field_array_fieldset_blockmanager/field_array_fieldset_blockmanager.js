@@ -17,7 +17,7 @@ var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $ro
     var self = this;
 
     if(!fieldScope.model) {
-      fieldScope.model ={};
+      fieldScope.model =[];
     }
 
     fieldScope.$watch('model', function(json) {
@@ -36,3 +36,4 @@ var fieldObjectJsonedit = function fieldStringText($compile, $templateCache, $ro
 };
 
 formModule.factory('array:fieldset:blockmanager', ['$compile', '$templateCache', '$rootScope', '$filter', fieldObjectJsonedit]);
+formModule.factory('array:object:blockmanager', ['$compile', '$templateCache', '$rootScope', '$filter', fieldObjectJsonedit]);

@@ -1,0 +1,12 @@
+<ui-select ng-model="selectedObject.selected"
+       theme="select2"
+       ng-disabled="disabled"
+       reset-search-input="false"
+       style="width: 300px;">
+    <ui-select-match placeholder="Find ... ">{{$select.selected.text}}</ui-select-match>
+    <ui-select-choices repeat="selectedObject in foundObjects track by $index"
+      refresh="refreshObjects($select.search)"
+      refresh-delay="0">
+    <div ng-bind-html="selectedObject.text | highlight: $select.search"></div>
+  </ui-select-choices>
+</ui-select>

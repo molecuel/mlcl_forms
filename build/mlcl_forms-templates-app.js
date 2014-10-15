@@ -1,4 +1,4 @@
-angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid/field_objectid.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/image/edit.tpl.html', 'widget/image/view.tpl.html', 'widget/video/edit.tpl.html', 'widget/video/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html']);
+angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_array_objectid/field_array_objectid.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid/field_objectid.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/collection/edit.tpl.html', 'widget/collection/view.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/image/edit.tpl.html', 'widget/image/view.tpl.html', 'widget/lt/edit.tpl.html', 'widget/lt/view.tpl.html', 'widget/menu/edit.tpl.html', 'widget/menu/view.tpl.html', 'widget/video/edit.tpl.html', 'widget/video/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html', 'widgetDirectives/selectObjectid/selectObjectid.tpl.html', 'widgetDirectives/selectObjectids/selectObjectid.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -117,6 +117,24 @@ angular.module("plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsone
     "      <json child=\"model\" type=\"array\" default-collapsed=\"true\"></json>\n" +
     "    </div>\n" +
     "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("plugins/field_array_objectid/field_array_objectid.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_array_objectid/field_array_objectid.tpl.html",
+    "<div class=\"form-group form-download\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "      <select-objectids class=\"col-md-12\" selected=\"selectedObject\" widgetmodel=\"mod\" fieldinfo=\"fieldInfo\"></select-objectids>\n" +
+    "      <material-button class=\"material-button-fab fab-sm\" ng-click=\"addToSet()\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "        <i class=\"fa fa-plus\"></i>\n" +
+    "      </material-button>\n" +
+    "      <ul ui-sortable ng-model=\"renderedData\">\n" +
+    "        <li ng-repeat=\"item in renderedData\">{{ item }}</li>\n" +
+    "      </ul>\n" +
+    "      <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");
@@ -412,6 +430,54 @@ angular.module("plugins/field_string_url/field_string_url.tpl.html", []).run(["$
     "");
 }]);
 
+angular.module("widget/collection/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/collection/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "    </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <div class=\"jsonView\" >\n" +
+    "      <json child=\"model.data\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "    </div>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/collection/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/collection/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-html5 widgettypeicon\"></i>\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <div class=\"jsonView\" >\n" +
+    "    <json child=\"model.data\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("widget/html/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("widget/html/edit.tpl.html",
     "<tabset>\n" +
@@ -560,6 +626,100 @@ angular.module("widget/image/view.tpl.html", []).run(["$templateCache", function
     "");
 }]);
 
+angular.module("widget/lt/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/lt/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "    </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <div class=\"richdiv\" contenteditable=\"true\" ckeditor ng-model=\"model.data.html\"></div>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/lt/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/lt/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-html5 widgettypeicon\"></i>\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <div class=\"jsonView\" >\n" +
+    "    <json child=\"model.data\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("widget/menu/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/menu/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "    </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <div class=\"jsonView\" >\n" +
+    "      <json child=\"model.data\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "    </div>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/menu/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/menu/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-html5 widgettypeicon\"></i>\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <div class=\"jsonView\" >\n" +
+    "    <json child=\"model.data\" type=\"object\" default-collapsed=\"true\"></json>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("widget/video/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("widget/video/edit.tpl.html",
     "<tabset>\n" +
@@ -624,9 +784,46 @@ angular.module("widget/widgetmanager.tpl.html", []).run(["$templateCache", funct
     "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('html')\"><i class=\"fa fa-html5\"></i>HTML Widget</material-button></li>\n" +
     "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('image')\"><i class=\"fa fa-picture-o\"></i>Image Widget</material-button></li>\n" +
     "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('video')\"><i class=\"fa fa-video\"></i>Video Widget</material-button></li>\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('lt')\"><i class=\"fa fa-json\"></i>LT Widget</material-button></li>\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('collection')\"><i class=\"fa fa-json\"></i>Collection widget</material-button></li>\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('menu')\"><i class=\"fa fa-json\"></i>Menu Widget</material-button></li>\n" +
     "    </ul>\n" +
     "  </div>\n" +
     "  <widget-view-container ng-model=\"model\" widgetmodel=\"model\"></widget-view-container>\n" +
     "</div>\n" +
+    "");
+}]);
+
+angular.module("widgetDirectives/selectObjectid/selectObjectid.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widgetDirectives/selectObjectid/selectObjectid.tpl.html",
+    "<ui-select ng-model=\"selectedObject.selected\"\n" +
+    "       theme=\"select2\"\n" +
+    "       ng-disabled=\"disabled\"\n" +
+    "       reset-search-input=\"false\"\n" +
+    "       style=\"width: 300px;\">\n" +
+    "    <ui-select-match placeholder=\"Find ... \">{{$select.selected.text}}</ui-select-match>\n" +
+    "    <ui-select-choices repeat=\"selectedObject in foundObjects track by $index\"\n" +
+    "      refresh=\"refreshObjects($select.search)\"\n" +
+    "      refresh-delay=\"0\">\n" +
+    "    <div ng-bind-html=\"selectedObject.text | highlight: $select.search\"></div>\n" +
+    "  </ui-select-choices>\n" +
+    "</ui-select>\n" +
+    "");
+}]);
+
+angular.module("widgetDirectives/selectObjectids/selectObjectid.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widgetDirectives/selectObjectids/selectObjectid.tpl.html",
+    "<ui-select multiple ng-model=\"selected.selected\" theme=\"select2\" ng-disabled=\"disabled\" style=\"width: 800px;\" reset-search-input=\"false\">\n" +
+    "  <ui-select-match placeholder=\"Add items...\">{{$item.text}}</ui-select-match>\n" +
+    "  <ui-select-choices repeat=\"item in foundObjects\"\n" +
+    "  refresh=\"refreshObjects($select.search)\"\n" +
+    "  refresh-delay=\"0\">\n" +
+    "    <div ng-bind-html=\"item.text | highlight: $select.search\"></div>\n" +
+    "    <small>\n" +
+    "      {{item.text}}\n" +
+    "    </small>\n" +
+    "  </ui-select-choices>\n" +
+    "</ui-select>\n" +
+    "{{selectedObject}}\n" +
     "");
 }]);

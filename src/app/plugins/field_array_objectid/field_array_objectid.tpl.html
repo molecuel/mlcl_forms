@@ -1,0 +1,13 @@
+<div class="form-group form-download">
+  <label class="col-md-2 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
+  <div class="col-md-10">
+      <select-objectids class="col-md-12" selected="selectedObject" widgetmodel="mod" fieldinfo="fieldInfo"></select-objectids>
+      <material-button class="material-button-fab fab-sm" ng-click="addToSet()" tabindex="-1" aria-label="">
+        <i class="fa fa-plus"></i>
+      </material-button>
+      <ul ui-sortable ng-model="renderedData">
+        <li ng-repeat="item in renderedData">{{ item }}</li>
+      </ul>
+      <p class="help-block">{{fieldInfo.help}}</p>
+  </div>
+</div>

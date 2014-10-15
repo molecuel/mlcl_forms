@@ -13,7 +13,6 @@ angular.module( 'mlcl_forms.widget', [
     restrict: 'E',
     templateUrl: 'widget/widgetmanager.tpl.html',
     link: function(scope, element) {
-
       scope.showSelectWidget = function() {
         if(scope.showWidgetSelect) {
           scope.showWidgetSelect = false;
@@ -23,8 +22,9 @@ angular.module( 'mlcl_forms.widget', [
       };
 
       scope.addWidget = function(widgetname) {
-        scope.model.push(widgetService.getItems(widgetname));
-
+        if(_.isArray(scope.model)) {
+          scope.model.push(widgetService.getItems(widgetname));
+        }
       };
     }
   };
@@ -133,7 +133,6 @@ angular.module( 'mlcl_forms.widget', [
 angular.module('flow.init', ['flow.provider'])
   .controller('flowCtrl', ['$scope', '$attrs', '$parse', 'flowFactory',
   function ($scope, $attrs, $parse, flowFactory) {
-    console.log('flow init');
     // create the flow object
     var options = angular.extend({}, $scope.$eval($attrs.flowInit));
     var flow = flowFactory.create(options);

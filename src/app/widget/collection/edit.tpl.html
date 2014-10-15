@@ -1,0 +1,15 @@
+<tabset>
+  <tab heading="Settings" active="settingsActive">
+     <material-content>
+       <material-input-group ng-disabled="isDisabled">
+         <label for="confTarget">Region</label>
+         <material-input id="confTarget" ng-model="model.target"></material-input>
+       </material-input-group>
+    </material-content>
+  </tab>
+  <tab heading="Editor" active="editorActive">
+    <div class="jsonView" >
+      <json child="model.data" type="object" default-collapsed="true"></json>
+    </div>
+  </tab>
+</tabset>

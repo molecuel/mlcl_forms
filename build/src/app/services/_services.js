@@ -191,7 +191,6 @@ mlcl_forms_services.factory('schemaService', function() {
           var formData = mongooseOptions.form || {};
           if (!formData.hidden) {
             if (mongooseType.array) {
-              console.log(mongooseType);
               if(mongooseType.schema) {
                 var sub = self.handleSubSchema(mongooseType, field, prefix);
                 destForm.push(sub);
@@ -276,6 +275,12 @@ mlcl_forms_services.factory('schemaService', function() {
         });
       } else if(mongooseType.caster) {
         var caster = mongooseType.caster;
+        if(caster.options && caster.options.ref) {
+          subSchema.ref = caster.options.ref;
+        }
+        if(caster.instance) {
+          subSchema.type = caster.instance.toLowerCase();
+        }
         if(caster.options && caster.options.form && caster.options.form.arraywidget) {
           subSchema.widget = caster.options.form.widget;
         }

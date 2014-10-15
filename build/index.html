@@ -43,6 +43,7 @@
     <script type="text/javascript" src="src/app/plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_array_fieldset_file/field_array_fieldset_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.js"></script>
+    <script type="text/javascript" src="src/app/plugins/field_array_objectid/field_array_objectid.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_boolean/field_boolean.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_date/field_date.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.js"></script>
@@ -62,9 +63,14 @@
     <script type="text/javascript" src="src/app/services/_services.js"></script>
     <script type="text/javascript" src="src/app/services/recordService.js"></script>
     <script type="text/javascript" src="src/app/widget/app.js"></script>
+    <script type="text/javascript" src="src/app/widget/collection/widget.js"></script>
     <script type="text/javascript" src="src/app/widget/html/html.js"></script>
     <script type="text/javascript" src="src/app/widget/image/widget.js"></script>
+    <script type="text/javascript" src="src/app/widget/lt/widget.js"></script>
+    <script type="text/javascript" src="src/app/widget/menu/widget.js"></script>
     <script type="text/javascript" src="src/app/widget/video/widget.js"></script>
+    <script type="text/javascript" src="src/app/widgetDirectives/selectObjectid/selectObjectid.js"></script>
+    <script type="text/javascript" src="src/app/widgetDirectives/selectObjectids/selectObjectid.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-common.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-app.js"></script>
 
@@ -73,7 +79,7 @@
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
            <div growl></div>
-          <form-input name="baseForm" modelname="smallFamily" record="54101db78a286fd0476e63ca" apihost="http://localhost:3000" formstyle="compact"></form-input>
+           <form-input name="baseForm" modelname="smallFamily" record="54101db78a286fd0476e63ca" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
           <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
       </div>
