@@ -93,7 +93,7 @@ angular.module( 'mlcl_forms.widget', [
       scope.$watchCollection('model', function(model) {
         elem.empty();
         var count = 0;
-        _.each(model, function(item) {
+        async.each(model, function(item, cb) {
           var subscope = scope.$new(false, scope);
           subscope.count = count;
           subscope.model = model[count];
@@ -101,7 +101,8 @@ angular.module( 'mlcl_forms.widget', [
           var widgetCont = $compile('<widget-'+item.type+'-view widgetmodel="model"></widget-'+ item.type+ '-view>{{model}}')(subscope);
           elem.append(widgetCont);
           count++;
-        });
+          cb();
+        }, function(err) {});
       });
     }
   };
@@ -125,3 +126,53 @@ angular.module( 'mlcl_forms.widget', [
 
   return service;
 });
+
+/**
+ * Overwrite the init function of the flow module
+ */
+angular.module('flow.init', ['flow.provider'])
+  .controller('flowCtrl', ['$scope', '$attrs', '$parse', 'flowFactory',
+  function ($scope, $attrs, $parse, flowFactory) {
+    console.log('flow init');
+    // create the flow object
+    var options = angular.extend({}, $scope.$eval($attrs.flowInit));
+    var flow = flowFactory.create(options);
+
+    flow.on('catchAll', function (eventName) {
+      var args = Array.prototype.slice.call(arguments);
+      args.shift();
+      var event = $scope.$broadcast.apply($scope, ['flow::' + eventName, flow].concat(args));
+      if ({
+        'progress':1, 'filesSubmitted':1, 'fileSuccess': 1, 'fileError': 1, 'complete': 1
+      }[eventName]) {
+        $scope.$apply();
+      }
+
+      var event2 = $scope.$emit.apply($scope, ['flow::' + eventName, flow].concat(args));
+      if ({
+        'progress':1, 'filesSubmitted':1, 'fileSuccess': 1, 'fileError': 1, 'complete': 1
+      }[eventName]) {
+        $scope.$apply();
+      }
+
+      if (event.defaultPrevented && event2.defaultPrevented) {
+        return false;
+      }
+    });
+
+    $scope.$flow = flow;
+    if ($attrs.hasOwnProperty('flowName')) {
+      $parse($attrs.flowName).assign($scope, flow);
+      $scope.$on('$destroy', function () {
+        $parse($attrs.flowName).assign($scope);
+      });
+    }
+  }])
+  // Add the flowInit directive and overwrite the scope
+  // original: Create a new scope
+  .directive('flowInit', [function() {
+    return {
+      controller: 'flowCtrl'
+    };
+  }]
+);

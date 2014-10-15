@@ -28,6 +28,8 @@ module.exports = function ( karma ) {
       'vendor/JSONedit/js/directives.js',
       'vendor/ngDialog/js/ngDialog.js',
       'vendor/angular-aria/angular-aria.js',
+      'vendor/async/lib/async.js',
+      'vendor/angular-ui-select/dist/select.js',
       'build/mlcl_forms-templates-app.js',
       'build/mlcl_forms-templates-common.js',
       'vendor/angular-mocks/angular-mocks.js',

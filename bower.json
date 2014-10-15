@@ -22,10 +22,11 @@
     "jquery": "~2.0",
     "angular-ui-utils": "~0.1.1",
     "angular-aria": "1.3.0-rc.4",
-    "hammerjs": "1.0.5"
+    "hammerjs": "1.0.5",
+    "ngDialog": "~0.3.0",
+    "async": "~0.9.0"
   },
   "dependencies": {
-    "ngDialog": "~0.3.0"
   },
   "resolutions": {
     "angular": "~1.3.0-rc.4",

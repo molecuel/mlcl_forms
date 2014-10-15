@@ -1,4 +1,5 @@
 <div class="col-md-12 widgetview">
+  <i class="fa fa-image widgettypeicon"></i>
   <div class="widget-button-group">
     <material-button class="material-button-fab fab-sm" ng-click="$parent.moveUp(model)" tabindex="-1" aria-label="">
       <i class="fa fa-sort-up"></i>
@@ -16,5 +17,7 @@
       <i class="fa fa-times"></i>
     </material-button>
   </div>
-  <div class="col-md-12 richdiv" contenteditable="true" ckeditor ng-model="model.data.html"></div>
+  <div class="col-md-12 richdiv">
+    <img ng-if="fileInfo[firstimage].url" src="{{apiHost}}{{fileInfo[firstimage].url}}"/>
+  </div>
 </div>

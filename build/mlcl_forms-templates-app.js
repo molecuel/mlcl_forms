@@ -1,4 +1,4 @@
-angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html']);
+angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid/field_objectid.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/image/edit.tpl.html', 'widget/image/view.tpl.html', 'widget/video/edit.tpl.html', 'widget/video/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -238,6 +238,30 @@ angular.module("plugins/field_object_jsonedit/field_object_jsonedit.tpl.html", [
     "");
 }]);
 
+angular.module("plugins/field_objectid/field_objectid.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("plugins/field_objectid/field_objectid.tpl.html",
+    "<div class=\"form-group form-download\">\n" +
+    "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
+    "  <div class=\"col-md-10\">\n" +
+    "      <ui-select ng-model=\"selectedObject.selected\"\n" +
+    "             theme=\"select2\"\n" +
+    "             ng-disabled=\"disabled\"\n" +
+    "             reset-search-input=\"false\"\n" +
+    "             style=\"width: 300px;\">\n" +
+    "    <ui-select-match placeholder=\"Find ... \">{{$select.selected.text}}</ui-select-match>\n" +
+    "    <ui-select-choices repeat=\"selectedObject in foundObjects track by $index\"\n" +
+    "             refresh=\"refreshObjects($select.search)\"\n" +
+    "             refresh-delay=\"0\">\n" +
+    "      <div ng-bind-html=\"selectedObject.text | highlight: $select.search\"></div>\n" +
+    "    </ui-select-choices>\n" +
+    "  </ui-select>\n" +
+    "\n" +
+    "    <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("plugins/field_objectid_file/field_objectid_file.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("plugins/field_objectid_file/field_objectid_file.tpl.html",
     "<div class=\"form-group form-download\">\n" +
@@ -409,6 +433,7 @@ angular.module("widget/html/edit.tpl.html", []).run(["$templateCache", function(
 angular.module("widget/html/view.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("widget/html/view.tpl.html",
     "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-html5 widgettypeicon\"></i>\n" +
     "  <div class=\"widget-button-group\">\n" +
     "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
     "      <i class=\"fa fa-sort-up\"></i>\n" +
@@ -431,6 +456,157 @@ angular.module("widget/html/view.tpl.html", []).run(["$templateCache", function(
     "");
 }]);
 
+angular.module("widget/image/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/image/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "       <material-checkbox ng-model=\"model.data.settings.gallery\" aria-label=\"Gallery\" ng-true-value=\"true\" ng-false-value=\"false\">\n" +
+    "        Gallery\n" +
+    "       </material-checkbox>\n" +
+    "     </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <div class=\"form-group form-download\">\n" +
+    "      <div class=\"col-md-12\">\n" +
+    "        <div flow-init=\"{target: uploadPath }\" flow-files-submitted=\"$flow.upload()\">\n" +
+    "          <div class=\"drop\" flow-drop=\"\" ng-class=\"dropClass\" flow-attrs=\"{accept:'image/*'}\">\n" +
+    "            <span class=\"btn btn-default\" flow-btn=\"\" flow-attrs=\"{accept:'image/*'}\">Upload File<input type=\"file\" multiple=\"multiple\" style=\"visibility: hidden; position: absolute;\"></span>\n" +
+    "            <span class=\"btn btn-default\" flow-btn=\"\" flow-attrs=\"{accept:'image/*'}\" flow-directory=\"\" ng-show=\"$flow.supportDirectory\">Upload Folder<input type=\"file\" multiple=\"multiple\" webkitdirectory=\"webkitdirectory\" style=\"visibility: hidden; position: absolute;\"></span>\n" +
+    "            <b>OR</b>\n" +
+    "            Drag And Drop your file here\n" +
+    "          </div>\n" +
+    "          <br>\n" +
+    "          <div class=\"well\">\n" +
+    "            <a class=\"btn btn-small btn-success\" ng-click=\"$flow.resume()\">Resume all</a>\n" +
+    "            <a class=\"btn btn-small btn-danger\" ng-click=\"$flow.pause()\">Pause all</a>\n" +
+    "            <a class=\"btn btn-small btn-info\" ng-click=\"$flow.cancel()\">Cancel all</a>\n" +
+    "            <span class=\"label label-info ng-binding\">Total Size: {{fullsize}} bytes</span>\n" +
+    "          </div>\n" +
+    "          <div class=\"progress col-md-12\" ng-show=\"$flow.isUploading() || $flow.paused\">\n" +
+    "            <material-linear-progress mode=\"determinate\" ng-value=\"$flow.progress() * 100\"></material-linear-progress>\n" +
+    "          </div>\n" +
+    "\n" +
+    "          <div ng-repeat=\"file in model.data.images\" class=\"col-md-12 transfer-box\">\n" +
+    "            <div class=\"col-md-6\">\n" +
+    "\n" +
+    "              <div class=\"filelabel col-md-12\">\n" +
+    "                <a href=\"{{apihost + fileInfo[file.file].url}}\" target=\"_blank\">{{fileInfo[file.file].filename}}</a>\n" +
+    "              </div>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-md-6 btn-group\">\n" +
+    "              <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.pause()\" ng-show=\"!file.paused && file.isUploading()\">\n" +
+    "                Pause\n" +
+    "              </a>\n" +
+    "              <a class=\"btn btn-xs btn-warning ng-hide\" ng-click=\"file.resume()\" ng-show=\"file.paused\">\n" +
+    "                Resume\n" +
+    "              </a>\n" +
+    "              <a class=\"btn btn-xs btn-danger\" ng-click=\"remove(file)\">\n" +
+    "                Remove\n" +
+    "              </a>\n" +
+    "              <a class=\"btn btn-xs btn-info ng-hide\" ng-click=\"file.retry()\" ng-show=\"file.error\">\n" +
+    "                Retry\n" +
+    "              </a>\n" +
+    "            </div>\n" +
+    "\n" +
+    "            <div class=\"col-md-6\">\n" +
+    "              <input class=\"form-control\" placeholder=\"File title\" type=\"text\" ng-model=\"file.title\"></input>\n" +
+    "            </div>\n" +
+    "            <div class=\"col-md-6\">\n" +
+    "              <label>\n" +
+    "                <input type=\"checkbox\" ng-model=\"file.download\">\n" +
+    "                Force download\n" +
+    "              </label>\n" +
+    "            </div>\n" +
+    "          </div>\n" +
+    "        </div>\n" +
+    "        <p class=\"help-block\">{{help}}</p>\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/image/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/image/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-image widgettypeicon\"></i>\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <div class=\"col-md-12 richdiv\">\n" +
+    "    <img ng-if=\"fileInfo[firstimage].url\" src=\"{{apiHost}}{{fileInfo[firstimage].url}}\"/>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "");
+}]);
+
+angular.module("widget/video/edit.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/video/edit.tpl.html",
+    "<tabset>\n" +
+    "  <tab heading=\"Settings\" active=\"settingsActive\">\n" +
+    "     <material-content>\n" +
+    "       <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "         <label for=\"confTarget\">Region</label>\n" +
+    "         <material-input id=\"confTarget\" ng-model=\"model.target\"></material-input>\n" +
+    "       </material-input-group>\n" +
+    "    </material-content>\n" +
+    "  </tab>\n" +
+    "  <tab heading=\"Editor\" active=\"editorActive\">\n" +
+    "    <material-input-group ng-disabled=\"isDisabled\">\n" +
+    "      <label for=\"videoUrl\">Video URL:</label>\n" +
+    "      <material-input id=\"videoUrl\" ng-model=\"model.data.video\"></material-input>\n" +
+    "    </material-input-group>\n" +
+    "  </tab>\n" +
+    "</tabset>\n" +
+    "");
+}]);
+
+angular.module("widget/video/view.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("widget/video/view.tpl.html",
+    "<div class=\"col-md-12 widgetview\">\n" +
+    "  <i class=\"fa fa-video-camera widgettypeicon\"></i>\n" +
+    "  <div class=\"widget-button-group\">\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveUp(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-up\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.moveDown(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-sort-down\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.edit(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-edit\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.settings(model, this)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-bars\"></i>\n" +
+    "    </material-button>\n" +
+    "    <material-button class=\"material-button-fab fab-sm\" ng-click=\"$parent.remove(model)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "      <i class=\"fa fa-times\"></i>\n" +
+    "    </material-button>\n" +
+    "  </div>\n" +
+    "  <iframe class=\"widgetvideoframe\" ng-if=\"trustvideourl\" src=\"{{trustvideourl}}\" />\n" +
+    "</div>\n" +
+    "");
+}]);
+
 angular.module("widget/widgetcontainer.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("widget/widgetcontainer.tpl.html",
     "<div class=\"col-md-12 widgetcontainer\">\n" +
@@ -447,6 +623,7 @@ angular.module("widget/widgetmanager.tpl.html", []).run(["$templateCache", funct
     "    <ul class=\"list-group widgetselectcontainer\">\n" +
     "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('html')\"><i class=\"fa fa-html5\"></i>HTML Widget</material-button></li>\n" +
     "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('image')\"><i class=\"fa fa-picture-o\"></i>Image Widget</material-button></li>\n" +
+    "      <li class=\"col-md-6 list-group-item addwidget\"><material-button ng-click=\"addWidget('video')\"><i class=\"fa fa-video\"></i>Video Widget</material-button></li>\n" +
     "    </ul>\n" +
     "  </div>\n" +
     "  <widget-view-container ng-model=\"model\" widgetmodel=\"model\"></widget-view-container>\n" +

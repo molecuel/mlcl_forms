@@ -149,6 +149,13 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
   };
 }]);
 
+
+mlcl_forms_services.factory('configService', function() {
+  return {
+    apiHost: ''
+  };
+});
+
 /**
  * schema handling factory
  */
@@ -184,6 +191,7 @@ mlcl_forms_services.factory('schemaService', function() {
           var formData = mongooseOptions.form || {};
           if (!formData.hidden) {
             if (mongooseType.array) {
+              console.log(mongooseType);
               if(mongooseType.schema) {
                 var sub = self.handleSubSchema(mongooseType, field, prefix);
                 destForm.push(sub);

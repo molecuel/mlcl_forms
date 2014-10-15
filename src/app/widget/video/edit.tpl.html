@@ -1,0 +1,16 @@
+<tabset>
+  <tab heading="Settings" active="settingsActive">
+     <material-content>
+       <material-input-group ng-disabled="isDisabled">
+         <label for="confTarget">Region</label>
+         <material-input id="confTarget" ng-model="model.target"></material-input>
+       </material-input-group>
+    </material-content>
+  </tab>
+  <tab heading="Editor" active="editorActive">
+    <material-input-group ng-disabled="isDisabled">
+      <label for="videoUrl">Video URL:</label>
+      <material-input id="videoUrl" ng-model="model.data.video"></material-input>
+    </material-input-group>
+  </tab>
+</tabset>

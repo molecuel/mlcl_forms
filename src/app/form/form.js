@@ -6,7 +6,9 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'flow',
   'ui.bootstrap',
   'ckeditor',
-  'JSONedit'
+  'JSONedit',
+  'ngSanitize',
+  'ui.select'
 ])
 /**
  * Factory method to create the form itself
@@ -35,7 +37,7 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
       };
     };
 })
-.directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, ApiService, growl) {
+.directive('formInput', ['$compile', '$injector', '$rootScope', 'utils', '$filter', '$templateCache','FormFactory', 'configService', 'apiService', function ($compile, $injector, $rootScope, utils, $filter, $templateCache, FormFactory, configService, ApiService, growl) {
     return {
       restrict: 'EA',
       link: function (scope, element, attrs) {
@@ -46,6 +48,9 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
         }
         // only run this stuff of a modelname has been defined
         if(attrs.modelname) {
+          if(attrs.apihost) {
+            configService.apiHost = attrs.apihost;
+          }
           // initialize the api service which provides the model for the form by a http api
           var api = new ApiService(scope, attrs.modelname, attrs.apihost);
 

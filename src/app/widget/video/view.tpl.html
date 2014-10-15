@@ -1,5 +1,5 @@
 <div class="col-md-12 widgetview">
-  <i class="fa fa-html5 widgettypeicon"></i>
+  <i class="fa fa-video-camera widgettypeicon"></i>
   <div class="widget-button-group">
     <material-button class="material-button-fab fab-sm" ng-click="$parent.moveUp(model)" tabindex="-1" aria-label="">
       <i class="fa fa-sort-up"></i>
@@ -17,5 +17,5 @@
       <i class="fa fa-times"></i>
     </material-button>
   </div>
-  <div class="col-md-12 richdiv" contenteditable="true" ckeditor ng-model="model.data.html"></div>
+  <iframe class="widgetvideoframe" ng-if="trustvideourl" src="{{trustvideourl}}" />
 </div>

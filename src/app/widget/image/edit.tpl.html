@@ -5,9 +5,67 @@
          <label for="confTarget">Region</label>
          <material-input id="confTarget" ng-model="model.target"></material-input>
        </material-input-group>
-    </material-content>
+       <material-checkbox ng-model="model.data.settings.gallery" aria-label="Gallery" ng-true-value="true" ng-false-value="false">
+        Gallery
+       </material-checkbox>
+     </material-content>
   </tab>
   <tab heading="Editor" active="editorActive">
-    <div class="richdiv" contenteditable="true" ckeditor ng-model="model.data.html"></div>
+    <div class="form-group form-download">
+      <div class="col-md-12">
+        <div flow-init="{target: uploadPath }" flow-files-submitted="$flow.upload()">
+          <div class="drop" flow-drop="" ng-class="dropClass" flow-attrs="{accept:'image/*'}">
+            <span class="btn btn-default" flow-btn="" flow-attrs="{accept:'image/*'}">Upload File<input type="file" multiple="multiple" style="visibility: hidden; position: absolute;"></span>
+            <span class="btn btn-default" flow-btn="" flow-attrs="{accept:'image/*'}" flow-directory="" ng-show="$flow.supportDirectory">Upload Folder<input type="file" multiple="multiple" webkitdirectory="webkitdirectory" style="visibility: hidden; position: absolute;"></span>
+            <b>OR</b>
+            Drag And Drop your file here
+          </div>
+          <br>
+          <div class="well">
+            <a class="btn btn-small btn-success" ng-click="$flow.resume()">Resume all</a>
+            <a class="btn btn-small btn-danger" ng-click="$flow.pause()">Pause all</a>
+            <a class="btn btn-small btn-info" ng-click="$flow.cancel()">Cancel all</a>
+            <span class="label label-info ng-binding">Total Size: {{fullsize}} bytes</span>
+          </div>
+          <div class="progress col-md-12" ng-show="$flow.isUploading() || $flow.paused">
+            <material-linear-progress mode="determinate" ng-value="$flow.progress() * 100"></material-linear-progress>
+          </div>
+
+          <div ng-repeat="file in model.data.images" class="col-md-12 transfer-box">
+            <div class="col-md-6">
+
+              <div class="filelabel col-md-12">
+                <a href="{{apihost + fileInfo[file.file].url}}" target="_blank">{{fileInfo[file.file].filename}}</a>
+              </div>
+            </div>
+            <div class="col-md-6 btn-group">
+              <a class="btn btn-xs btn-warning ng-hide" ng-click="file.pause()" ng-show="!file.paused && file.isUploading()">
+                Pause
+              </a>
+              <a class="btn btn-xs btn-warning ng-hide" ng-click="file.resume()" ng-show="file.paused">
+                Resume
+              </a>
+              <a class="btn btn-xs btn-danger" ng-click="remove(file)">
+                Remove
+              </a>
+              <a class="btn btn-xs btn-info ng-hide" ng-click="file.retry()" ng-show="file.error">
+                Retry
+              </a>
+            </div>
+
+            <div class="col-md-6">
+              <input class="form-control" placeholder="File title" type="text" ng-model="file.title"></input>
+            </div>
+            <div class="col-md-6">
+              <label>
+                <input type="checkbox" ng-model="file.download">
+                Force download
+              </label>
+            </div>
+          </div>
+        </div>
+        <p class="help-block">{{help}}</p>
+      </div>
+    </div>
   </tab>
 </tabset>

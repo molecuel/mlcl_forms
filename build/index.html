@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- font awesome from BootstrapCDN -->
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet">
 
     <!-- compiled CSS -->
     <link rel="stylesheet" type="text/css" href="assets/mlcl_forms.css" />
@@ -35,6 +35,8 @@
     <script type="text/javascript" src="vendor/JSONedit/js/directives.js"></script>
     <script type="text/javascript" src="vendor/ngDialog/js/ngDialog.js"></script>
     <script type="text/javascript" src="vendor/angular-aria/angular-aria.js"></script>
+    <script type="text/javascript" src="vendor/async/lib/async.js"></script>
+    <script type="text/javascript" src="vendor/angular-ui-select/dist/select.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
     <script type="text/javascript" src="src/app/list/list.js"></script>
@@ -47,6 +49,7 @@
     <script type="text/javascript" src="src/app/plugins/field_number/field_number.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_object_file_file/field_object_file_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_object_jsonedit/field_object_jsonedit.js"></script>
+    <script type="text/javascript" src="src/app/plugins/field_objectid/field_objectid.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_objectid_file/field_objectid_file.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string/field_string.js"></script>
     <script type="text/javascript" src="src/app/plugins/field_string_password/field_string_password.js"></script>
@@ -60,6 +63,8 @@
     <script type="text/javascript" src="src/app/services/recordService.js"></script>
     <script type="text/javascript" src="src/app/widget/app.js"></script>
     <script type="text/javascript" src="src/app/widget/html/html.js"></script>
+    <script type="text/javascript" src="src/app/widget/image/widget.js"></script>
+    <script type="text/javascript" src="src/app/widget/video/widget.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-common.js"></script>
     <script type="text/javascript" src="mlcl_forms-templates-app.js"></script>
 
@@ -68,7 +73,7 @@
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
            <div growl></div>
-          <form-input name="baseForm" modelname="page" record="540daf465be9a5000058f35f" apihost="http://localhost:3000" formstyle="compact"></form-input>
+          <form-input name="baseForm" modelname="smallFamily" record="54101db78a286fd0476e63ca" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
           <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
       </div>
