@@ -27,7 +27,6 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
         cb();
       }, function(err) {
         fieldScope.model = _.union(fieldScope.model, myarray);
-        fieldScope.selectedOject.selected = {};
       });
     };
 
