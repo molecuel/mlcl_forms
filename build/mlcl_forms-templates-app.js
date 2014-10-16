@@ -127,14 +127,23 @@ angular.module("plugins/field_array_objectid/field_array_objectid.tpl.html", [])
     "<div class=\"form-group form-download\">\n" +
     "  <label class=\"col-md-2 control-label\" for=\"{{attributes.name}}\">{{fieldInfo.label}}</label>\n" +
     "  <div class=\"col-md-10\">\n" +
-    "      <select-objectids class=\"col-md-12\" selected=\"selectedObject\" widgetmodel=\"mod\" fieldinfo=\"fieldInfo\"></select-objectids>\n" +
-    "      <material-button class=\"material-button-fab fab-sm\" ng-click=\"addToSet()\" tabindex=\"-1\" aria-label=\"\">\n" +
-    "        <i class=\"fa fa-plus\"></i>\n" +
-    "      </material-button>\n" +
-    "      <ul ui-sortable ng-model=\"renderedData\">\n" +
-    "        <li ng-repeat=\"item in renderedData\">{{ item }}</li>\n" +
+    "      <select-objectids class=\"col-md-6\" selected=\"selectedObject\" widgetmodel=\"mod\" fieldinfo=\"fieldInfo\"></select-objectids>\n" +
+    "      <div class=\"buttonlist col-md-6\">\n" +
+    "        <material-button class=\"material-button-fab fab-sm\" ng-click=\"addToSet()\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "          <i class=\"fa fa-plus\"></i>\n" +
+    "        </material-button>\n" +
+    "      </div>\n" +
+    "      <p class=\"col-md-12 help-block\">{{fieldInfo.options.help || 'Drag and Drop elements for the correct position'}}</p>\n" +
+    "      <ul ui-sortable class=\"list-group\" ng-model=\"renderedData\">\n" +
+    "        <li class=\"col-md-12 list-group-item\" ng-repeat=\"item in renderedData\">\n" +
+    "          <div class=\"col-md-6\">{{ item.text }}</div>\n" +
+    "          <div class=\"col-md-6 buttonlist\">\n" +
+    "            <material-button class=\"material-button-fab fab-sm\" ng-click=\"removeFromSet(item)\" tabindex=\"-1\" aria-label=\"\">\n" +
+    "              <i class=\"fa fa-minus\"></i>\n" +
+    "            </material-button>\n" +
+    "          </div>\n" +
+    "        </li>\n" +
     "      </ul>\n" +
-    "      <p class=\"help-block\">{{fieldInfo.help}}</p>\n" +
     "  </div>\n" +
     "</div>\n" +
     "");
@@ -813,7 +822,7 @@ angular.module("widgetDirectives/selectObjectid/selectObjectid.tpl.html", []).ru
 
 angular.module("widgetDirectives/selectObjectids/selectObjectid.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("widgetDirectives/selectObjectids/selectObjectid.tpl.html",
-    "<ui-select multiple ng-model=\"selected.selected\" theme=\"select2\" ng-disabled=\"disabled\" style=\"width: 800px;\" reset-search-input=\"false\">\n" +
+    "<ui-select multiple ng-model=\"selected.selected\" theme=\"select2\" ng-disabled=\"disabled\" style=\"width: 800px;\" reset-search-input=\"true\">\n" +
     "  <ui-select-match placeholder=\"Add items...\">{{$item.text}}</ui-select-match>\n" +
     "  <ui-select-choices repeat=\"item in foundObjects\"\n" +
     "  refresh=\"refreshObjects($select.search)\"\n" +

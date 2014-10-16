@@ -27,7 +27,14 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
         cb();
       }, function(err) {
         fieldScope.model = _.union(fieldScope.model, myarray);
+        fieldScope.selectedOject.selected = {};
       });
+    };
+
+    fieldScope.removeFromSet = function removeFromSet(item) {
+      if(item && item.id) {
+        fieldScope.model = _.without(fieldScope.model,item.id);
+      }
     };
 
     fieldScope.modelInfo = {};
@@ -47,17 +54,25 @@ var fieldArrayFile = function fieldStringText($compile, $templateCache, $rootSco
             cb();
           }
         }, function() {
+          if(!fieldScope.initialized) {
+            fieldScope.initialized = true;
+          }
           fieldScope.renderArray();
         });
       }
     });
 
-
     /**
      * @todo implement the check if the rendered data has been changed and update the model
-     */ 
+     */
     fieldScope.$watchCollection('renderedData', function(newVal) {
-      console.log('cjhanged');
+      if(fieldScope.initialized) {
+        var newmod = [];
+        _.each(fieldScope.renderedData, function(item) {
+          newmod.push(item.id);
+        });
+        fieldScope.model = newmod;
+      }
     });
 
     fieldScope.renderArray = function renderArray() {

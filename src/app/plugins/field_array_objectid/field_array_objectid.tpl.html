@@ -1,13 +1,22 @@
 <div class="form-group form-download">
   <label class="col-md-2 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
   <div class="col-md-10">
-      <select-objectids class="col-md-12" selected="selectedObject" widgetmodel="mod" fieldinfo="fieldInfo"></select-objectids>
-      <material-button class="material-button-fab fab-sm" ng-click="addToSet()" tabindex="-1" aria-label="">
-        <i class="fa fa-plus"></i>
-      </material-button>
-      <ul ui-sortable ng-model="renderedData">
-        <li ng-repeat="item in renderedData">{{ item }}</li>
+      <select-objectids class="col-md-6" selected="selectedObject" widgetmodel="mod" fieldinfo="fieldInfo"></select-objectids>
+      <div class="buttonlist col-md-6">
+        <material-button class="material-button-fab fab-sm" ng-click="addToSet()" tabindex="-1" aria-label="">
+          <i class="fa fa-plus"></i>
+        </material-button>
+      </div>
+      <p class="col-md-12 help-block">{{fieldInfo.options.help || 'Drag and Drop elements for the correct position'}}</p>
+      <ul ui-sortable class="list-group" ng-model="renderedData">
+        <li class="col-md-12 list-group-item" ng-repeat="item in renderedData">
+          <div class="col-md-6">{{ item.text }}</div>
+          <div class="col-md-6 buttonlist">
+            <material-button class="material-button-fab fab-sm" ng-click="removeFromSet(item)" tabindex="-1" aria-label="">
+              <i class="fa fa-minus"></i>
+            </material-button>
+          </div>
+        </li>
       </ul>
-      <p class="help-block">{{fieldInfo.help}}</p>
   </div>
 </div>
