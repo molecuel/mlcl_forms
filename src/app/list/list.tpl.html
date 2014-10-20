@@ -1,4 +1,18 @@
-<table class="table table-hover data-table">
+<!-- <button ng-click="tableParams.reload()" class="btn btn-default">Reload</button>
+<button ng-click="tableParams.sorting({})" class="btn btn-default">Clear sorting</button> -->
+<div class="clearfix"></div>
+<div loading-container="tableParams.settings().$loading">
+  <table ng-table="tableParams" template-header="list/listheader.tpl.html" show-filter="true" class="table">
+    <tbody>
+      <tr ng-repeat="element in $data">
+          <td  ng-repeat="column in columns" sortable="column.field">
+            {{element[column.field]}}
+          </td>
+    </tbody>
+  </table>
+</div>
+
+<!-- <table class="table table-hover data-table">
   <thead>
     <tr>
       <th ng-repeat="listfield in listfields">{{listfield.field}}</th>
@@ -15,3 +29,4 @@
   <li><span>&laquo;</span></li>
   <li ng-repeat="mypage in pagearray" ng-click="changepage(mypage)"><span>{{mypage}}</span></li>
 </ul>
+-->

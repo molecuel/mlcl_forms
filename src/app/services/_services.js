@@ -1,6 +1,6 @@
-var mlcl_forms_services = angular.module('mlcl_forms.services', ['angular-growl']);
+var mlcl_forms_services = angular.module('mlcl_forms.services', ['angular-growl', 'ngResource']);
 
-mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', 'growl', '$rootScope', function($http, $filter, SchemaService, RecordService, growl, $rootScope) {
+mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', 'growl', '$rootScope', '$resource', function($http, $filter, SchemaService, RecordService, growl, $rootScope, $resource) {
 
   return function(directiveScope, modelName, apiHost) {
     var self = this;
@@ -55,6 +55,11 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
         callback(null, data);
       }).error(this.handleError);
     };
+
+    this.element = $resource(
+        self.apiHost + '/api/'+self.modelName+'/:Id',
+        {Id: "@Id" }
+    );
 
     this.save = function save(id, record) {
       //Convert the lookup values into ids

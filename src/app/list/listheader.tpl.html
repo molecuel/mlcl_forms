@@ -1,0 +1,16 @@
+<tr>
+  <th colspan="3">
+     <input class="form-control" type="text" ng-model="filterinput.myfilter" placeholder="Filter"  />
+  </th>
+</tr>
+<tr>
+    <th ng-repeat="column in columns"
+        class="text-center sortable" ng-class="{
+            'sort-asc': tableParams.isSortBy(column.field, 'asc'),
+            'sort-desc': tableParams.isSortBy(column.field, 'desc')
+          }"
+        ng-click="tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')">
+        {{column.field}}
+    </th>
+    <!--<th>Columns:{{columns.length}}</th>-->
+</tr>

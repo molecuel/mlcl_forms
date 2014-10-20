@@ -1,4 +1,4 @@
-angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_array_objectid/field_array_objectid.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid/field_objectid.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/collection/edit.tpl.html', 'widget/collection/view.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/image/edit.tpl.html', 'widget/image/view.tpl.html', 'widget/lt/edit.tpl.html', 'widget/lt/view.tpl.html', 'widget/menu/edit.tpl.html', 'widget/menu/view.tpl.html', 'widget/video/edit.tpl.html', 'widget/video/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html', 'widgetDirectives/selectObjectid/selectObjectid.tpl.html', 'widgetDirectives/selectObjectids/selectObjectid.tpl.html']);
+angular.module('mlcl_forms-templates-app', ['form/form.tpl.html', 'form/input.tpl.html', 'list/list.tpl.html', 'list/listheader.tpl.html', 'plugins/field_array_fieldset_blockmanager/field_array_fieldset_blockmanager.tpl.html', 'plugins/field_array_fieldset_file/field_array_fieldset_file.tpl.html', 'plugins/field_array_fieldset_jsonedit/field_array_fieldset_jsonedit.tpl.html', 'plugins/field_array_objectid/field_array_objectid.tpl.html', 'plugins/field_boolean/field_boolean.tpl.html', 'plugins/field_date/field_date.tpl.html', 'plugins/field_date_datetime_datepicker/field_date_datetime_datepicker.tpl.html', 'plugins/field_number/field_number.tpl.html', 'plugins/field_object_file_file/field_object_file_file.tpl.html', 'plugins/field_object_jsonedit/field_object_jsonedit.tpl.html', 'plugins/field_objectid/field_objectid.tpl.html', 'plugins/field_objectid_file/field_objectid_file.tpl.html', 'plugins/field_string/field_string_text.tpl.html', 'plugins/field_string_password/field_string_password.tpl.html', 'plugins/field_string_radio/field_string_radio.tpl.html', 'plugins/field_string_select/field_string_select.tpl.html', 'plugins/field_string_select_typeahead/field_string_select_typeahead.tpl.html', 'plugins/field_string_textarea/field_string_textarea.tpl.html', 'plugins/field_string_textarea_wysiwyg/field_string_textarea_wysiwyg.tpl.html', 'plugins/field_string_url/field_string_url.tpl.html', 'widget/collection/edit.tpl.html', 'widget/collection/view.tpl.html', 'widget/html/edit.tpl.html', 'widget/html/view.tpl.html', 'widget/image/edit.tpl.html', 'widget/image/view.tpl.html', 'widget/lt/edit.tpl.html', 'widget/lt/view.tpl.html', 'widget/menu/edit.tpl.html', 'widget/menu/view.tpl.html', 'widget/video/edit.tpl.html', 'widget/video/view.tpl.html', 'widget/widgetcontainer.tpl.html', 'widget/widgetmanager.tpl.html', 'widgetDirectives/selectObjectid/selectObjectid.tpl.html', 'widgetDirectives/selectObjectids/selectObjectid.tpl.html']);
 
 angular.module("form/form.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("form/form.tpl.html",
@@ -14,7 +14,21 @@ angular.module("form/input.tpl.html", []).run(["$templateCache", function($templ
 
 angular.module("list/list.tpl.html", []).run(["$templateCache", function($templateCache) {
   $templateCache.put("list/list.tpl.html",
-    "<table class=\"table table-hover data-table\">\n" +
+    "<!-- <button ng-click=\"tableParams.reload()\" class=\"btn btn-default\">Reload</button>\n" +
+    "<button ng-click=\"tableParams.sorting({})\" class=\"btn btn-default\">Clear sorting</button> -->\n" +
+    "<div class=\"clearfix\"></div>\n" +
+    "<div loading-container=\"tableParams.settings().$loading\">\n" +
+    "  <table ng-table=\"tableParams\" template-header=\"list/listheader.tpl.html\" show-filter=\"true\" class=\"table\">\n" +
+    "    <tbody>\n" +
+    "      <tr ng-repeat=\"element in $data\">\n" +
+    "          <td  ng-repeat=\"column in columns\" sortable=\"column.field\">\n" +
+    "            {{element[column.field]}}\n" +
+    "          </td>\n" +
+    "    </tbody>\n" +
+    "  </table>\n" +
+    "</div>\n" +
+    "\n" +
+    "<!-- <table class=\"table table-hover data-table\">\n" +
     "  <thead>\n" +
     "    <tr>\n" +
     "      <th ng-repeat=\"listfield in listfields\">{{listfield.field}}</th>\n" +
@@ -31,6 +45,28 @@ angular.module("list/list.tpl.html", []).run(["$templateCache", function($templa
     "  <li><span>&laquo;</span></li>\n" +
     "  <li ng-repeat=\"mypage in pagearray\" ng-click=\"changepage(mypage)\"><span>{{mypage}}</span></li>\n" +
     "</ul>\n" +
+    "-->\n" +
+    "");
+}]);
+
+angular.module("list/listheader.tpl.html", []).run(["$templateCache", function($templateCache) {
+  $templateCache.put("list/listheader.tpl.html",
+    "<tr>\n" +
+    "  <th colspan=\"3\">\n" +
+    "     <input class=\"form-control\" type=\"text\" ng-model=\"filterinput.myfilter\" placeholder=\"Filter\"  />\n" +
+    "  </th>\n" +
+    "</tr>\n" +
+    "<tr>\n" +
+    "    <th ng-repeat=\"column in columns\"\n" +
+    "        class=\"text-center sortable\" ng-class=\"{\n" +
+    "            'sort-asc': tableParams.isSortBy(column.field, 'asc'),\n" +
+    "            'sort-desc': tableParams.isSortBy(column.field, 'desc')\n" +
+    "          }\"\n" +
+    "        ng-click=\"tableParams.sorting(column.field, tableParams.isSortBy(column.field, 'asc') ? 'desc' : 'asc')\">\n" +
+    "        {{column.field}}\n" +
+    "    </th>\n" +
+    "    <!--<th>Columns:{{columns.length}}</th>-->\n" +
+    "</tr>\n" +
     "");
 }]);
 

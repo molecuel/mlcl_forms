@@ -71,13 +71,15 @@ module.exports = {
       'vendor/angular-growl/build/angular-growl.js',
       'vendor/angular-sanitize/angular-sanitize.js',
       'vendor/angular-animate/angular-animate.js',
+      'vendor/angular-resource/angular-resource.js',
       'vendor/angular-material/angular-material.js',
       'vendor/angular-ui-sortable/sortable.js',
       'vendor/JSONedit/js/directives.js',
       'vendor/ngDialog/js/ngDialog.js',
       'vendor/angular-aria/angular-aria.js',
       'vendor/async/lib/async.js',
-      'vendor/angular-ui-select/dist/select.js'
+      'vendor/angular-ui-select/dist/select.js',
+      'vendor/ng-table/ng-table.js'
     ],
     css: [
     ],
