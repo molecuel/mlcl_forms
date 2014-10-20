@@ -68,6 +68,14 @@ mlcl_forms.form = angular.module( 'mlcl_forms.list', [
                   scope.listfields = [{
                     field:'_id'
                   }];
+                } else if(result.listFields.length === 1 && result.listFields[0].field === 'lang') {
+                  if(result.hits.length > 0) {
+                    if(result.hits[0].title) {
+                      scope.listfields.unshift({field: 'title'});
+                    } else {
+                      scope.listfields.unshift({field: '_id'});
+                    }
+                  }
                 }
                 // update table params
                 params.total(result.total);

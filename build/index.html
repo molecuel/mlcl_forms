@@ -84,6 +84,7 @@
            <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
            <form-input name="baseForm" modelname="smallFamily" record="54101db78a286fd0476e63ca" apihost="http://localhost:3000" formstyle="compact"></form-input>
           <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
+          <button id="deleteButton" class="btn btn-mini btn-primary form-btn" ng-click="api.deleteRecord(attrs.record)"><i class="icon-ok"></i> Delete</button>
       </div>
     </div>
   </body>

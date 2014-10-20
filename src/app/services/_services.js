@@ -71,6 +71,16 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
       }
     };
 
+    this.deleteRecord = function deleteRecord(id) {
+      $http['delete'](self.apiHost + '/api/' + self.modelName + '/'+id).success(function(data) {
+        if(data.sucess === false) {
+          growl.addErrorMessage('Error whie deleting');
+        } else {
+          growl.addInfoMessage('Saved');
+        }
+      }).error(self.handleError);
+    };
+
     this.createNew = function (dataToSave) {
       $http.post( self.apiHost + '/api/' + self.modelName, dataToSave).success(function (data) {
         if (data.success === false) {
