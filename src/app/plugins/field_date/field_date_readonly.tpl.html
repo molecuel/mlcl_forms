@@ -1,7 +1,7 @@
 <div class="form-group">
   <label class="col-md-2 control-label" for="{{attributes.name}}">{{fieldInfo.label}}</label>
   <div class="col-md-10">
-    <date-time-zone defaulttimezone="defaultTZ" tzmodel="tzmodel" widgetmodel="model" ></date-time-zone>
+    <input type="text" class="form-control" ng-model="model" id="{{attributes.id}}" name="{{attributes.name}}" ng-required="{{attributes.required}}" ng-readonly="true" />
     <p class="help-block">{{fieldInfo.help}}</p>
   </div>
 </div>

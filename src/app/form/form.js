@@ -8,7 +8,8 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
   'ckeditor',
   'JSONedit',
   'ngSanitize',
-  'ui.select'
+  'ui.select',
+  'ngDatetimezone'
 ])
 /**
  * Factory method to create the form itself
@@ -199,7 +200,6 @@ mlcl_forms.form = angular.module( 'mlcl_forms.form', [
           if(!fieldInfo.instance) {
             fieldInfo.instance = 'string';
           }
-
 
           var handlerString1;
           var handlerString2;

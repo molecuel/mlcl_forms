@@ -23,6 +23,8 @@
     <!-- compiled JavaScript -->
     <script type="text/javascript" src="vendor/jquery/jquery.js"></script>
     <script type="text/javascript" src="vendor/jquery-ui/jquery-ui.js"></script>
+    <script type="text/javascript" src="vendor/moment/moment.js"></script>
+    <script type="text/javascript" src="vendor/moment-timezone/builds/moment-timezone-with-data.js"></script>
     <script type="text/javascript" src="vendor/hammerjs/dist/hammer.js"></script>
     <script type="text/javascript" src="vendor/angular-elastic/elastic.js"></script>
     <script type="text/javascript" src="vendor/ng-flow/dist/ng-flow-standalone.js"></script>
@@ -39,6 +41,7 @@
     <script type="text/javascript" src="vendor/async/lib/async.js"></script>
     <script type="text/javascript" src="vendor/angular-ui-select/dist/select.js"></script>
     <script type="text/javascript" src="vendor/ng-table/ng-table.js"></script>
+    <script type="text/javascript" src="vendor/ngdatetimezone/ngDatetimezone.js"></script>
     <script type="text/javascript" src="src/app/app.js"></script>
     <script type="text/javascript" src="src/app/form/form.js"></script>
     <script type="text/javascript" src="src/app/list/list.js"></script>
@@ -80,11 +83,11 @@
   <body>
     <div class="main">
       <div ng-controller="BaseCtrl"  class="test col-md-12" ui-view>
-           <div growl></div>
-           <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
-           <form-input name="baseForm" modelname="smallFamily" record="54101db78a286fd0476e63ca" apihost="http://localhost:3000" formstyle="compact"></form-input>
-          <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
-          <button id="deleteButton" class="btn btn-mini btn-primary form-btn" ng-click="api.deleteRecord(attrs.record)"><i class="icon-ok"></i> Delete</button>
+       <div growl></div>
+       <mlcl-form-list modelname="page" apihost="http://localhost:3000" page="1"></mlcl-form-list>
+       <form-input name="baseForm" modelname="event" record="53bc2f7c107212b913532aa0" apihost="http://localhost:3000" formstyle="compact"></form-input>
+       <button id="saveButton" class="btn btn-mini btn-primary form-btn" ng-click="api.save(attrs.record, record)" ng-disabled="isSaveDisabled()" disabled="disabled"><i class="icon-ok"></i> Save</button>
+       <button id="deleteButton" class="btn btn-mini btn-primary form-btn" ng-click="api.deleteRecordDialog(attrs.record)"><i class="icon-ok"></i> Delete</button>
       </div>
     </div>
   </body>

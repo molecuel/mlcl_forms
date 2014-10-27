@@ -1,6 +1,6 @@
 var mlcl_forms_services = angular.module('mlcl_forms.services', ['angular-growl', 'ngResource']);
 
-mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', 'growl', '$rootScope', '$resource', function($http, $filter, SchemaService, RecordService, growl, $rootScope, $resource) {
+mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', 'recordService', 'growl', '$rootScope', '$resource', '$materialDialog', function($http, $filter, SchemaService, RecordService, growl, $rootScope, $resource, $materialDialog) {
 
   return function(directiveScope, modelName, apiHost) {
     var self = this;
@@ -71,12 +71,40 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
       }
     };
 
-    this.deleteRecord = function deleteRecord(id) {
+    this.deleteRecordDialog = function deleteRecordDialog(id, options) {
+      var self = this;
+      var subScope = directiveScope.$new();
+      subScope.id = id;
+      subScope.options = options;
+
+      subScope.hide = function() {
+        $materialDialog.hide();
+      };
+
+      subScope.answer = function(id) {
+        if(id) {
+          $materialDialog.hide(id);
+          self.deleteRecord(id, options);
+        } else {
+          $materialDialog.hide();
+        }
+      };
+
+      $materialDialog.show({
+        template: '<material-dialog class="col-md-12"><div class="dialog-content">Are you sure you want to delete?</div><div class="dialog-actions"><material-button ng-click="answer(id)" class="material-theme-green">Yes</material-button><material-button ng-click="answer()" class="material-theme-red">No</material-button></div></material-dialog>',
+        scope: subScope
+      });
+    };
+
+    this.deleteRecord = function deleteRecord(id, options) {
       $http['delete'](self.apiHost + '/api/' + self.modelName + '/'+id).success(function(data) {
         if(data.sucess === false) {
           growl.addErrorMessage('Error whie deleting');
         } else {
-          growl.addInfoMessage('Saved');
+          if(options && options.deleteRedirect) {
+            options.deleteRedirect();
+          }
+          growl.addInfoMessage('Deleted '+id);
         }
       }).error(self.handleError);
     };
@@ -167,7 +195,9 @@ mlcl_forms_services.factory('apiService', ['$http', '$filter','schemaService', '
 
 mlcl_forms_services.factory('configService', function() {
   return {
-    apiHost: ''
+    apiHost: '',
+    //@todo: Load default from server
+    defaultTimezone: 'Europe/Moscow'
   };
 });
 

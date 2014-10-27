@@ -64,6 +64,8 @@ module.exports = {
     js: [
       'vendor/jquery/jquery.js',
       'vendor/jquery-ui/jquery-ui.js',
+      'vendor/moment/moment.js',
+      'vendor/moment-timezone/builds/moment-timezone-with-data.js',
       'vendor/hammerjs/dist/hammer.js',
       'vendor/angular-elastic/elastic.js',
       'vendor/ng-flow/dist/ng-flow-standalone.js',
@@ -79,7 +81,8 @@ module.exports = {
       'vendor/angular-aria/angular-aria.js',
       'vendor/async/lib/async.js',
       'vendor/angular-ui-select/dist/select.js',
-      'vendor/ng-table/ng-table.js'
+      'vendor/ng-table/ng-table.js',
+      'vendor/ngdatetimezone/ngDatetimezone.js'
     ],
     css: [
     ],
